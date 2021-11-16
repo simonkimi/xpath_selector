@@ -1,0 +1,1 @@
+final nodeTestWithPredicate = RegExp(r'(?<node>.+)\[(?<predicate>.+)\]');

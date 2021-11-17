@@ -1,12 +1,14 @@
-import 'package:html_xpath_selector/src/selector.dart';
+import 'package:xpath_for_html/src/reg.dart';
+import 'package:xpath_for_html/src/selector.dart';
 
-import 'match.dart';
+import 'reg.dart';
 
 List<List<Selector>> parseSelectGroup(String xpath) {
   final combine = xpath.split('|');
   final selectorList = <List<Selector>>[];
 
-  for (final path in combine) {
+  for (final _path in combine) {
+    final path = _path.trim();
     final selectorSources = <String>[];
     final matches = RegExp("//|/").allMatches(path).toList();
     for (var index = 0; index < matches.length; index++) {
@@ -26,53 +28,20 @@ List<List<Selector>> parseSelectGroup(String xpath) {
 Selector _parseSelector(String input) {
   late String source;
   late SelectorType selectorType;
-  if (input.startsWith('//')) {  // descendant
+  if (input.startsWith('//')) {
+    // descendant
     selectorType = SelectorType.descendant;
     source = input.substring(2);
-  } else if (input.startsWith('/')) {  // self
+  } else if (input.startsWith('/')) {
+    // self
     selectorType = SelectorType.self;
     source = input.substring(1);
-  } else if (input == '.') {
-    return Selector(
-        selectorType: SelectorType.self,
-        axes: SelectorAxes(
-          axis: AxesAxis.self,
-          nodeTest: '*',
-        ));
   } else {
     throw FormatException("'$input' is not a valid xpath query string");
   }
 
-  if (source=='@') {
-    return Selector(
-      selectorType: selectorType,
-      axes: SelectorAxes(
-        axis: AxesAxis.self,
-        nodeTest: '*',
-      ),
-      attr: source
-    );
-  }
-
-  // 父节点
-  if (source == '..') {
-    return Selector(
-        selectorType: selectorType,
-        axes: SelectorAxes(
-          axis: AxesAxis.parent,
-          nodeTest: '*',
-        ));
-  }
-
-  // 自己
-  if (source == '.') {
-    return Selector(
-        selectorType: selectorType,
-        axes: SelectorAxes(
-          axis: AxesAxis.self,
-          nodeTest: '*',
-        ));
-  }
+  final simpleSelector = _parseSimpleSelector(selectorType, source);
+  if (simpleSelector != null) return simpleSelector;
 
   // Axis
   AxesAxis? axis;
@@ -106,4 +75,60 @@ Selector _parseSelector(String input) {
         axis: axis,
         predicate: match.namedGroup('predicate')!,
       ));
+}
+
+Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
+  // attr
+  if (source.startsWith('@')) {
+    return Selector(
+        selectorType: selectorType,
+        axes: SelectorAxes(
+          axis: AxesAxis.self,
+          nodeTest: '*',
+        ),
+        attr: source.substring(1));
+  }
+
+  // parents
+  if (source == '..') {
+    return Selector(
+        selectorType: selectorType,
+        axes: SelectorAxes(
+          axis: AxesAxis.parent,
+          nodeTest: '*',
+        ));
+  }
+
+  // self
+  if (source == '.') {
+    return Selector(
+        selectorType: selectorType,
+        axes: SelectorAxes(
+          axis: AxesAxis.self,
+          nodeTest: '*',
+        ));
+  }
+
+  // text()
+  if (source == 'text()') {
+    return Selector(
+      selectorType: selectorType,
+      function: SelectorFunction.text,
+      axes: SelectorAxes(
+        nodeTest: '*',
+        axis: AxesAxis.self,
+      ),
+    );
+  }
+
+  // node()
+  if (source == 'node()') {
+    return Selector(
+      selectorType: selectorType,
+      axes: SelectorAxes(
+        nodeTest: '*',
+        axis: AxesAxis.child,
+      ),
+    );
+  }
 }

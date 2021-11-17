@@ -1,5 +1,6 @@
+enum SelectorType { descendant, self }
 
-enum SelectorType { descendant, self}
+enum SelectorFunction { text, node }
 
 class SelectorGroup {
   final List<Selector> selectors;
@@ -10,15 +11,21 @@ class SelectorGroup {
 }
 
 class Selector {
-  Selector({required this.selectorType, required this.axes, this.attr});
+  Selector({
+    required this.selectorType,
+    required this.axes,
+    this.attr,
+    this.function,
+  });
 
   final SelectorType selectorType;
   final SelectorAxes axes;
   final String? attr;
+  final SelectorFunction? function;
 
   @override
   String toString() =>
-      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${axes.nodeTest}${axes.predicate != null ? '[${axes.predicate}]' : ''}';
+      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${function ?? axes.nodeTest}${axes.predicate != null ? '[${axes.predicate}]' : ''}';
 }
 
 // 轴
@@ -63,6 +70,17 @@ class SelectorAxes {
       throw FormatException('not support axis: $axis');
     }
     return map[axis]!;
+  }
+
+  static SelectorFunction createFunction(String function) {
+    final map = {
+      'text()': SelectorFunction.text,
+      'node()': SelectorFunction.node,
+    };
+    if (!map.containsKey(function)) {
+      throw FormatException('not support axis: $function');
+    }
+    return map[function]!;
   }
 }
 

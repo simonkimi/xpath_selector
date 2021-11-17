@@ -1,12 +1,12 @@
 import 'package:expressions/expressions.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
-import 'package:html_xpath_selector/src/dom_selector.dart';
-import 'package:html_xpath_selector/src/parser.dart';
-import 'package:html_xpath_selector/src/selector.dart';
-import 'package:html_xpath_selector/src/utils.dart';
+import 'package:xpath_for_html/src/dom_selector.dart';
+import 'package:xpath_for_html/src/parser.dart';
+import 'package:xpath_for_html/src/selector.dart';
+import 'package:xpath_for_html/src/utils.dart';
 
-import 'match.dart';
+import 'reg.dart';
 import 'op.dart';
 
 class XPathResult {
@@ -17,13 +17,14 @@ class XPathResult {
 
   Element? get element => elements.isNotEmpty ? elements.first : null;
 
-  String? get attr =>
-      attrs.firstWhere((e) => e != null, orElse: () => null);
+  String? get attr => attrs.firstWhere((e) => e != null, orElse: () => null);
 }
 
 class XPath {
+  /// Create XPath by html element
   XPath(this.root);
 
+  /// Create XPath by html string
   factory XPath.html(String html) {
     final dom = parse(html).documentElement;
     if (dom == null) throw UnsupportedError('No html');
@@ -32,16 +33,20 @@ class XPath {
 
   final Element root;
 
+  /// query XPath
   XPathResult query(String xpath) {
     final result = <Element>[];
     final resultAttrs = <String?>[];
     final selectorGroup = parseSelectGroup(xpath);
     for (final selector in selectorGroup) {
       final newResult = _execute(selectorList: selector, element: root)
-          .where((e) => !result.contains(e));
+          .where((e) => !result.contains(e))
+          .toList();
       result.addAll(newResult);
-      resultAttrs.addAll(
-          _parseAttr(selectorList: selector, elements: newResult.toList()));
+      resultAttrs.addAll(_parseAttr(
+        selectorList: selector,
+        elements: newResult.toList(),
+      ));
     }
     return XPathResult(result, resultAttrs);
   }
@@ -52,10 +57,14 @@ List<String?> _parseAttr({
   required List<Element> elements,
 }) {
   final result = <String?>[];
-  if (selectorList.isNotEmpty && elements.isNotEmpty) {
+  if (selectorList.isNotEmpty) {
     final last = selectorList.last;
-    if (last.attr != null) {
-      result.add(elements.last.attributes[last.attr!]);
+    for(final element in elements) {
+      if (last.attr != null) {
+        result.add(element.attributes[last.attr!]);
+      } else if (last.function == SelectorFunction.text) {
+        result.add(element.text);
+      }
     }
   }
   return result;
@@ -97,20 +106,22 @@ List<Element> _execute({
   return tmp;
 }
 
-// 根据头部选择器确定初选范围
+/// Get element by path
 List<Element> _matchSelectPath(Selector selector, Element element) {
   final waitingSelect = <Element>[];
   switch (selector.selectorType) {
     case SelectorType.descendant:
-      waitingSelect.addAllIfNotExist(descendant(element));
+      waitingSelect.addAllIfNotExist(descentOrSelf(element));
       break;
     case SelectorType.self:
       waitingSelect.addIfNotExist(element);
       break;
   }
+  print(waitingSelect);
   return waitingSelect;
 }
 
+/// Get element by Axis
 List<Element> _matchAxis(Selector selector, Element element) {
   final waitingSelect = <Element>[];
   switch (selector.axes.axis) {
@@ -150,7 +161,7 @@ List<Element> _matchAxis(Selector selector, Element element) {
   return waitingSelect;
 }
 
-// 确定一个Element是否符合Selector的node-test和predicate
+/// Is element match [Selector]'s [selector.axes.nodeTest] and [predicate]
 bool _matchSelector({
   required Selector selector,
   required Element element,
@@ -173,6 +184,7 @@ bool _matchSelector({
   return true;
 }
 
+/// Is element match [selector.axes.predicate]
 bool _matchPredicates({
   required Selector selector,
   required Element element,
@@ -266,6 +278,12 @@ bool _multipleCompare({
     expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
   }
 
+  final childReg = predicateChild.allMatches(predicate);
+  for (final reg in childReg) {
+    final result = _childMatch(element, reg)!;
+    expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
+  }
+
   final eval = Expression.parse(expression);
   final evaluator = const ExpressionEvaluator();
   final result = evaluator.eval(eval, {});
@@ -289,6 +307,10 @@ bool _singleCompare({
   final attrResult = _attrMatch(element, attrReg);
   if (attrResult != null) return attrResult;
 
+  // [child<10]
+  final childReg = predicateChild.firstMatch(predicate);
+  final childResult = _childMatch(element, childReg);
+  if (childResult != null) return childResult;
   return false;
 }
 
@@ -311,4 +333,18 @@ bool? _attrMatch(Element element, RegExpMatch? reg) {
     return opString(attr, value, op);
   }
   return null;
+}
+
+bool? _childMatch(Element element, RegExpMatch? reg) {
+  if (reg != null) {
+    final childName = reg.namedGroup('child');
+    final op = reg.namedGroup('op')!;
+    final num = int.tryParse(reg.namedGroup('num')!) ?? 0;
+    final childValue = element.children
+        .where((e) => e.localName == childName)
+        .map((e) => int.tryParse(e.text))
+        .firstWhere((e) => e != null, orElse: () => null);
+    if (childValue == null) return false;
+    return opCompare(childValue, num, op);
+  }
 }

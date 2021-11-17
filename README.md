@@ -4,6 +4,8 @@
 
 An XPath selector for locating HTML elements
 
+English | [中文文档](https://github.com/simonkimi/xpath_for_html/blob/master/README-zh_CN.MD)
+
 ## Easy to use
 
 You have three ways to do XPath queries

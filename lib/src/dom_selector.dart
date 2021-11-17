@@ -3,7 +3,7 @@ import 'package:html/dom.dart';
 /// Select top element
 Element? top(Element? e) {
   if (e == null) return null;
-  while(e!.parent != null) {
+  while (e!.parent != null) {
     e = e.parent!;
   }
   return e;

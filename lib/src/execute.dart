@@ -9,14 +9,20 @@ import 'package:xpath_for_html/src/utils.dart';
 import 'reg.dart';
 import 'op.dart';
 
+/// Result of XPath
 class XPathResult {
   XPathResult(this.elements, this.attrs);
 
+  /// Get all nodes of query results
   final List<Element> elements;
+
+  /// Get all properties of query results
   final List<String?> attrs;
 
+  /// Get the first node of query results
   Element? get element => elements.isNotEmpty ? elements.first : null;
 
+  /// Get the first valid property of the query result (not null)
   String? get attr => attrs.firstWhere((e) => e != null, orElse: () => null);
 }
 

@@ -29,13 +29,9 @@ final String htmlString = '''
 </html>
 ''';
 
-
-
-
 void main() {
   // You can create xpath selector by html
   final xpath = XPath.html(htmlString);
-
 
   print(xpath.query('//div/a').elements);
 
@@ -47,7 +43,7 @@ void main() {
   // Or by element
   print(htmlDom.queryXPath(r'//div/a').elements);
 
-  print('-'*10 + 'example' + '-'*10);
+  print('-' * 10 + 'example' + '-' * 10);
 
   print('\n//div/a');
   print(htmlDom.queryXPath(r'//div/a').element);
@@ -77,7 +73,9 @@ void main() {
   print(htmlDom.queryXPath(r'//td[@class^="fir"]/text()').attrs);
 
   print('\n//td[@class^="second" or position()>=7]');
-  print(htmlDom.queryXPath(r'//td[@class="first1" or position()>=7]/text()').attrs);
+  print(htmlDom
+      .queryXPath(r'//td[@class="first1" or position()>=7]/text()')
+      .attrs);
 
   print('\n//tr/child::*/text()');
   print(htmlDom.queryXPath(r'//tr/child::*/text()').attrs);

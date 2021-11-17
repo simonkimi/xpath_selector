@@ -4,6 +4,8 @@
 
 一款用于定位Html元素的XPath选择器
 
+[English](https://github.com/simonkimi/xpath_for_html/blob/master/README.md) | 中文文档
+
 ## 轻松使用
 
 您有三种方法可以进行XPath查询

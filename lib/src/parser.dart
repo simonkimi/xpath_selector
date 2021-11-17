@@ -26,10 +26,10 @@ List<List<Selector>> parseSelectGroup(String xpath) {
 Selector _parseSelector(String input) {
   late String source;
   late SelectorType selectorType;
-  if (input.startsWith('//')) {
+  if (input.startsWith('//')) {  // 相当于descendant
     selectorType = SelectorType.descendant;
     source = input.substring(2);
-  } else if (input.startsWith('/')) {
+  } else if (input.startsWith('/')) {  // 在child里搜寻
     selectorType = SelectorType.child;
     source = input.substring(1);
   } else if (input == '.') {
@@ -43,6 +43,17 @@ Selector _parseSelector(String input) {
     throw FormatException("'$input' is not a valid xpath query string");
   }
 
+  if (source=='@') {
+    return Selector(
+      selectorType: selectorType,
+      axes: SelectorAxes(
+        axis: AxesAxis.self,
+        nodeTest: '*',
+      ),
+      attr: source
+    );
+  }
+
   // 父节点
   if (source == '..') {
     return Selector(
@@ -53,7 +64,7 @@ Selector _parseSelector(String input) {
         ));
   }
 
-  // 父节点
+  // 自己
   if (source == '.') {
     return Selector(
         selectorType: selectorType,

@@ -72,8 +72,8 @@ List<Element> followingSibling(Element? e) {
   return result;
 }
 
-/// Selects all nodes that appear before the current node in the document, except ancestors, attribute nodes and namespace nodes
-List<Element> preceding(Element? e) {
+/// Selects all siblings before the current node
+List<Element> precedingSibling(Element? e) {
   final result = <Element>[];
   if (e == null) return result;
   var currentDom = e;
@@ -82,10 +82,4 @@ List<Element> preceding(Element? e) {
     currentDom = currentDom.previousElementSibling!;
   }
   return result;
-}
-
-/// Selects all siblings before the current node
-List<Element> precedingOrSelf(Element? e) {
-  if (e == null) return <Element>[];
-  return <Element>[e, ...preceding(e)];
 }

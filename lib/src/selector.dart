@@ -11,10 +11,11 @@ class SelectorGroup {
 }
 
 class Selector {
-  Selector({required this.selectorType, required this.axes});
+  Selector({required this.selectorType, required this.axes, this.attr});
 
   final SelectorType selectorType;
   final SelectorAxes axes;
+  final String? attr;
 
   @override
   String toString() =>
@@ -29,6 +30,7 @@ enum AxesAxis {
   descendant,
   descendantOrSelf,
   following,
+  followingSibling,
   parent,
   preceding,
   precedingSibling,
@@ -54,6 +56,7 @@ class SelectorAxes {
       'descendant': AxesAxis.descendant,
       'descendant-or-self': AxesAxis.descendantOrSelf,
       'following': AxesAxis.following,
+      'following-sibling': AxesAxis.followingSibling,
       'parent': AxesAxis.parent,
       'preceding': AxesAxis.preceding,
       'preceding-sibling': AxesAxis.precedingSibling,

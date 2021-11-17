@@ -40,6 +40,5 @@ void main() {
 
   final table = root.querySelector('table')!;
 
-  print(following(root, table));
-
+  print(table.localName);
 }

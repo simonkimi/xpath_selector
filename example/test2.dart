@@ -1,3 +1,15 @@
-import 'package:html_xpath_selector/src/match.dart';
-import 'package:html_xpath_selector/src/utils.dart';
 
+
+
+
+import 'package:expressions/expressions.dart';
+
+void main() {
+  final expression = Expression.parse("2 ~/ 1");
+
+
+  final evaluator = const ExpressionEvaluator();
+  var r = evaluator.eval(expression, {});
+
+  print(r);
+}

@@ -104,6 +104,6 @@ Selector _parseSelector(String input) {
       axes: SelectorAxes(
         nodeTest: match.namedGroup('node')!,
         axis: axis,
-        predicates: match.namedGroup('predicate')!,
+        predicate: match.namedGroup('predicate')!,
       ));
 }

@@ -33,3 +33,24 @@ bool opCompare(int a, int b, String op) {
       throw 'Unknown operator: $op';
   }
 }
+
+bool opString(String attr, String value, String op) {
+  switch (op) {
+    case '=':
+      return attr == value;
+    case '!=':
+      return attr != value;
+    case '~=':
+      return attr.split(' ').contains(value);
+    case '*=':
+      return attr.contains(value);
+    case '^=':
+      return attr.startsWith(value);
+    case '|=':
+      return attr.split(RegExp(r'\s|-')).first == value;
+    case r'$=':
+      return attr.endsWith(value);
+    default:
+      throw 'Unknown operator: $op';
+  }
+}

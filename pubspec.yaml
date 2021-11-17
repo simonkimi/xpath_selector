@@ -10,6 +10,7 @@ environment:
 dependencies:
   expressions : ^0.2.3
   html: ^0.15.0
+  tuple: ^2.0.0
 
 dev_dependencies:
   lints: ^1.0.0

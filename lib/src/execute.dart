@@ -1,11 +1,11 @@
-import 'dart:math';
-
+import 'package:expressions/expressions.dart';
 import 'package:html/dom.dart';
 import 'package:html_xpath_selector/src/dom_selector.dart';
 import 'package:html_xpath_selector/src/selector.dart';
-import 'package:html_xpath_selector/src/utils.dart';
+import 'package:tuple/tuple.dart';
 
 import 'match.dart';
+import 'op.dart';
 
 class SelectorExecute {
   final result = <Element>[];
@@ -44,7 +44,7 @@ class SelectorExecute {
     final nodeTest = selector.axes.nodeTest;
     if (nodeTest != '*' && element.localName != nodeTest) return false;
 
-    // predicates
+    // predicate
 
     return true;
   }
@@ -54,57 +54,132 @@ class SelectorExecute {
       required Element element,
       required int position,
       required int length}) {
-    if (selector.axes.predicates == null) return true;
-    var predicates = selector.axes.predicates!;
-    predicates = predicates.replaceAll(' and ', ' && ');
-    predicates = predicates.replaceAll(' or ', ' || ');
-    predicates = predicates.replaceAll(' div ', ' / ');
-    predicates = predicates.replaceAll(' mod ', ' % ');
+    if (selector.axes.predicate == null) return true;
+    var predicate = selector.axes.predicate!;
+    predicate = predicate.replaceAll(' and ', ' && ');
+    predicate = predicate.replaceAll(' or ', ' || ');
+    predicate = predicate.replaceAll(' div ', ' / ');
+    predicate = predicate.replaceAll(' mod ', ' % ');
 
+    if (predicateSym.allMatches(predicate).length >= 2 ||
+        predicate.contains(' && ') ||
+        predicate.contains(' || ')) {
+      // 多计算
+      return _multipleCompare(
+        predicate: predicate,
+        element: element,
+        position: position,
+        length: length,
+      );
+    } else {
+      // 单计算
 
-
-    if (predicateLast.hasMatch(predicates) ||
-        predicateInt.hasMatch(predicates) ||
-        predicatePosition.hasMatch(predicates)) {
       // Position
-      if (predicateMultiple.hasMatch(predicates)) {
-        // 多计算
-
-      } else {
-        // 单计算
-
+      if (predicateLast.hasMatch(predicate) ||
+          predicateInt.hasMatch(predicate)) {
+        return _singlePosition(
+          predicate: predicate,
+          position: position,
+          length: length,
+        );
       }
+
+      // compare
+      return _singleCompare(
+        predicate: predicate,
+        element: element,
+        position: position,
+        length: length,
+      );
     }
-
-
-    return false;
   }
 
   bool _singlePosition({
-    required String predicates,
-    required Element element,
+    required String predicate,
     required int position,
     required int length,
   }) {
-    final positionReg = simplePosition.firstMatch(predicates);
-    if (positionReg != null) {
-      final op = positionReg.namedGroup('op')!;
-      final num = int.tryParse(positionReg.namedGroup('num')!) ?? 0;
-      return opCompare(position + 1, num, op);
-    }
-
-    final lastReg = simpleLast.firstMatch(predicates);
+    // [last() - 1]
+    final lastReg = simpleLast.firstMatch(predicate);
     if (lastReg != null) {
       final num = int.tryParse(lastReg.namedGroup('num')!) ?? 0;
       final op = lastReg.namedGroup('op')!;
       return opNum(length, num, op) == position + 1;
     }
 
-    final indexReg = predicateInt.firstMatch(predicates);
+    // [1]
+    final indexReg = predicateInt.firstMatch(predicate);
     if (indexReg != null) {
       final num = int.tryParse(indexReg.namedGroup('num')!) ?? 0;
       return num == position + 1;
     }
     return false;
+  }
+
+  bool _multipleCompare({
+    required String predicate,
+    required Element element,
+    required int position,
+    required int length,
+  }) {
+    var expression = predicate;
+
+    final positionReg = simplePosition.allMatches(predicate);
+    for (final reg in positionReg) {
+      final result = _positionMatch(position, reg)!;
+      expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
+    }
+
+    final attrReg = predicateAttr.allMatches(predicate);
+    for (final reg in attrReg) {
+      final result = _attrMatch(element, reg)!;
+      expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
+    }
+
+    final eval = Expression.parse(expression);
+    final evaluator = const ExpressionEvaluator();
+    final result = evaluator.eval(eval, {});
+    if (result is bool) return result;
+    return false;
+  }
+
+  bool _singleCompare({
+    required String predicate,
+    required Element element,
+    required int position,
+    required int length,
+  }) {
+    // [position() < 3]
+    final positionReg = simplePosition.firstMatch(predicate);
+    final positionResult = _positionMatch(position, positionReg);
+    if (positionResult != null) return positionResult;
+
+    // [@attr='gdd']
+    final attrReg = predicateAttr.firstMatch(predicate);
+    final attrResult = _attrMatch(element, attrReg);
+    if (attrResult != null) return attrResult;
+
+    return false;
+  }
+
+  bool? _positionMatch(int position, RegExpMatch? reg) {
+    if (reg != null) {
+      final op = reg.namedGroup('op')!;
+      final num = int.tryParse(reg.namedGroup('num')!) ?? 0;
+      return opCompare(position + 1, num, op);
+    }
+    return null;
+  }
+
+  bool? _attrMatch(Element element, RegExpMatch? reg) {
+    if (reg != null) {
+      final attrName = reg.namedGroup('attr')!;
+      final op = reg.namedGroup('op')!;
+      final value = reg.namedGroup('value')!;
+      final attr = element.attributes[attrName];
+      if (attr == null) return false;
+      return opString(attr, value, op);
+    }
+    return null;
   }
 }

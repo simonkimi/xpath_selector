@@ -19,7 +19,7 @@ class Selector {
 
   @override
   String toString() =>
-      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${axes.nodeTest}${axes.predicates != null ? '[${axes.predicates}]' : ''}';
+      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${axes.nodeTest}${axes.predicate != null ? '[${axes.predicate}]' : ''}';
 }
 
 // 轴
@@ -41,12 +41,12 @@ class SelectorAxes {
   SelectorAxes({
     required this.axis,
     required this.nodeTest,
-    this.predicates,
+    this.predicate,
   });
 
   final AxesAxis? axis;
   final String nodeTest;
-  final String? predicates;
+  final String? predicate;
 
   static AxesAxis createAxis(String axis) {
     final map = {

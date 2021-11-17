@@ -1,16 +1,15 @@
 name: xpath_for_html
-description: A starting point for Dart libraries or applications.
+description: xpath package for HTML, most XPath syntax is supported.
 version: 1.0.0
-# homepage: https://www.example.com
+homepage: https://github.com/simonkimi/xpath_for_html
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
 
 dependencies:
-  expressions : ^0.2.3
+  expressions: ^0.2.3
   html: ^0.15.0
-  tuple: ^2.0.0
 
 dev_dependencies:
   lints: ^1.0.0

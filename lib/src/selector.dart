@@ -1,4 +1,6 @@
-enum SelectorType { child, root }
+import 'package:html/dom.dart';
+
+enum SelectorType { child, descendant, self}
 
 class SelectorGroup {
   final List<Selector> selectors;
@@ -16,7 +18,7 @@ class Selector {
 
   @override
   String toString() =>
-      '${selectorType == SelectorType.root ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${axes.nodeTest}${axes.predicates != null ? '[${axes.predicates}]' : ''}';
+      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${axes.nodeTest}${axes.predicates != null ? '[${axes.predicates}]' : ''}';
 }
 
 // 轴

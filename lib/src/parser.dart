@@ -11,8 +11,8 @@ List<List<Selector>> parseSelectGroup(String xpath) {
     final matches = RegExp("//|/").allMatches(path).toList();
     for (var index = 0; index < matches.length; index++) {
       if (index > 0) {
-        selectorSources
-            .add(path.substring(matches[index - 1].start, matches[index].start));
+        selectorSources.add(
+            path.substring(matches[index - 1].start, matches[index].start));
       }
       if (index == matches.length - 1) {
         selectorSources.add(path.substring(matches[index].start, path.length));
@@ -27,11 +27,18 @@ Selector _parseSelector(String input) {
   late String source;
   late SelectorType selectorType;
   if (input.startsWith('//')) {
-    selectorType = SelectorType.root;
+    selectorType = SelectorType.descendant;
     source = input.substring(2);
   } else if (input.startsWith('/')) {
     selectorType = SelectorType.child;
     source = input.substring(1);
+  } else if (input == '.') {
+    return Selector(
+        selectorType: SelectorType.self,
+        axes: SelectorAxes(
+          axis: AxesAxis.self,
+          nodeTest: '*',
+        ));
   } else {
     throw FormatException("'$input' is not a valid xpath query string");
   }
@@ -42,6 +49,16 @@ Selector _parseSelector(String input) {
         selectorType: selectorType,
         axes: SelectorAxes(
           axis: AxesAxis.parent,
+          nodeTest: '*',
+        ));
+  }
+
+  // 父节点
+  if (source == '.') {
+    return Selector(
+        selectorType: selectorType,
+        axes: SelectorAxes(
+          axis: AxesAxis.self,
           nodeTest: '*',
         ));
   }

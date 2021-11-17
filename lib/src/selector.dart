@@ -1,6 +1,5 @@
-import 'package:html/dom.dart';
 
-enum SelectorType { child, descendant, self}
+enum SelectorType { descendant, self}
 
 class SelectorGroup {
   final List<Selector> selectors;
@@ -32,7 +31,6 @@ enum AxesAxis {
   following,
   followingSibling,
   parent,
-  preceding,
   precedingSibling,
   self,
 }
@@ -58,7 +56,6 @@ class SelectorAxes {
       'following': AxesAxis.following,
       'following-sibling': AxesAxis.followingSibling,
       'parent': AxesAxis.parent,
-      'preceding': AxesAxis.preceding,
       'preceding-sibling': AxesAxis.precedingSibling,
       'self': AxesAxis.self,
     };

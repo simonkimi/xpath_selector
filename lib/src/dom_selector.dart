@@ -1,5 +1,14 @@
 import 'package:html/dom.dart';
 
+/// Select top element
+Element? top(Element? e) {
+  if (e == null) return null;
+  while(e!.parent != null) {
+    e = e.parent!;
+  }
+  return e;
+}
+
 /// Selects all ancestors (parent, grandparent, etc.) of the current node
 List<Element> ancestor(Element? e) {
   final result = <Element>[];

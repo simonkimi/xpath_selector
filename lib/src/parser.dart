@@ -26,11 +26,11 @@ List<List<Selector>> parseSelectGroup(String xpath) {
 Selector _parseSelector(String input) {
   late String source;
   late SelectorType selectorType;
-  if (input.startsWith('//')) {  // 相当于descendant
+  if (input.startsWith('//')) {  // descendant
     selectorType = SelectorType.descendant;
     source = input.substring(2);
-  } else if (input.startsWith('/')) {  // 在child里搜寻
-    selectorType = SelectorType.child;
+  } else if (input.startsWith('/')) {  // self
+    selectorType = SelectorType.self;
     source = input.substring(1);
   } else if (input == '.') {
     return Selector(

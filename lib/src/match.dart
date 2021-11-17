@@ -7,6 +7,7 @@ final predicateSym = RegExp(r'[\+\-\*\/]');
 
 final simplePosition = RegExp(r'position\(\s*\)\s*(?<op><|<=|>|>=)\s*(?<num>\d+)');
 final simpleLast = RegExp(r'last\(\s*\)\s*(?<op>\+|\-|\*|\/%\^)\s*(?<num>\d+)');
+final simpleSingleLast = RegExp(r'last\(\s*\)');
 
 final predicateAttr = RegExp(r'''@(?<attr>\w+)(?<op>=|~=|\|=|\^=|\$=|\*=|!=)['"](?<value>.+)['"]''');
 

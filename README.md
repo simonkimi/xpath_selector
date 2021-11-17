@@ -1,39 +1,70 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# xpath_for_html
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+[![Pub](https://img.shields.io/pub/v/xpath_for_html.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
+An XPath selector for locating HTML elements
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## Easy to use
 
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+You have three ways to do XPath queries
 
 ```dart
-const like = 'sample';
+
+final html = '''<html><div></div></html>''';
+final htmlDom = parse(htmlString).documentElement!;
+
+// Create by html string
+
+final result1 = XPath.html(html).query('//div');
+
+// Or through the dom of the HTML package
+final result2 = XPath(htmlDom).query('//div');
+
+// Or query directly through element
+final result3 = htmlDom.queryXPath('//div');
+
+// Get all nodes of query results
+print(result1.elements);
+
+// Get the first node of query results
+
+print(result1.element);
+
+// Get all properties of query results
+print(result1.attrs);
+
+// Get the first valid property of the query result (not null)
+print(result1.attr);
 ```
 
-## Additional information
+More examples can be referred to[example](https://github.com/simonkimi/xpath_for_html/blob/master/example/example.dart)
+or [test](https://github.com/simonkimi/xpath_for_html/blob/master/test/test.dart)
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+## Basic syntax
+
+|Expression|Css or html|Description|Attr|
+|---|---|---|---|
+|//|Selects nodes in the document from the current node that match the selection no matter where they are|
+|/|Selects from the root node||
+|..|Selects the parent of the current node| |
+|tag[n]|nth-child(n)|Select by index|
+|tag[@key="value"]|tag[key="value"]|Filter properties|
+|node()|.children|child|
+|text()|.text|text|√|
+|@attr| |Selects attributes|√|
+
+For more syntax, please refer to[XPath](https://www.w3school.com/xpath/xpath_syntax.asp)
+
+## Extended syntax
+
+
+In the attribute selector, the parser extends the following attribute selector in CSS style
+
+
+|Expression|Css|Description|
+|---|---|---|
+|[@attr='value']|[attr="value"]|Selects all elements with attr="value"|
+|[@attr~='value']|[attr~="value"]|Selects all elements attribute containing the word "value"|
+|[@attr^='value']|[attr^="value"]|Selects all elements whose attr attribute value begins with "value"|
+|[@attr$='value']|[attr$="value"]|Selects all elements whose attr attribute value ends with "value"|
+|[@attr*='value']|[attr*="value"]|Selects all elements whose attr attribute value contains the substring "value"|

@@ -40,6 +40,7 @@ void main() {
   test('basic', () {
     expect(html.queryXPath('//div/a').element, html.querySelector('a'));
     expect(html.queryXPath('//div/a/@href').attr, html.querySelector('a')!.attributes['href']);
+    expect(html.queryXPath('//td[@id="td1"]/@*').attrs, html.querySelector('#td1')!.attributes.values);
     expect(html.queryXPath('//div/a/text()').attr, html.querySelector('a')!.text);
     expect(html.queryXPath('//tr/node()').elements, html.querySelector('tr')!.children);
   });
@@ -71,6 +72,8 @@ void main() {
   });
 
   test('axes', () {
+    expect(html.queryXPath('//td[@id="td1"]/attribute::class').attr, html.querySelector('#td1')!.attributes['class']);
+    expect(html.queryXPath('//td[@id="td1"]/attribute::*').attrs, html.querySelector('#td1')!.attributes.values);
     expect(html.queryXPath('//td/parent::*').element, html.querySelector('tr'));
     expect(html.queryXPath('//tr/child::*').elements, html.querySelectorAll('td'));
     expect(html.queryXPath('//td/ancestor::*').elements, ancestor(html.querySelector('td')));

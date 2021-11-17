@@ -40,6 +40,7 @@ enum AxesAxis {
   parent,
   precedingSibling,
   self,
+  attribute,
 }
 
 class SelectorAxes {
@@ -65,6 +66,7 @@ class SelectorAxes {
       'parent': AxesAxis.parent,
       'preceding-sibling': AxesAxis.precedingSibling,
       'self': AxesAxis.self,
+      'attribute': AxesAxis.attribute,
     };
     if (!map.containsKey(axis)) {
       throw FormatException('not support axis: $axis');

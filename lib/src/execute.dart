@@ -59,11 +59,21 @@ List<String?> _parseAttr({
   final result = <String?>[];
   if (selectorList.isNotEmpty) {
     final last = selectorList.last;
-    for(final element in elements) {
+    for (final element in elements) {
       if (last.attr != null) {
-        result.add(element.attributes[last.attr!]);
+        if (last.attr == '*') {
+          result.addAll(element.attributes.values);
+        } else {
+          result.add(element.attributes[last.attr]);
+        }
       } else if (last.function == SelectorFunction.text) {
         result.add(element.text);
+      } else if (last.axes.axis == AxesAxis.attribute) {
+        if (last.axes.nodeTest == '*') {
+          result.addAll(element.attributes.values);
+        } else {
+          result.add(element.attributes[last.axes.nodeTest]);
+        }
       }
     }
   }
@@ -117,7 +127,6 @@ List<Element> _matchSelectPath(Selector selector, Element element) {
       waitingSelect.addIfNotExist(element);
       break;
   }
-  print(waitingSelect);
   return waitingSelect;
 }
 
@@ -154,6 +163,7 @@ List<Element> _matchAxis(Selector selector, Element element) {
     case AxesAxis.precedingSibling:
       waitingSelect.addAllIfNotExist(precedingSibling(element));
       break;
+    case AxesAxis.attribute:
     case AxesAxis.self:
       waitingSelect.addIfNotExist(element);
       break;
@@ -169,6 +179,7 @@ bool _matchSelector({
   required int length,
 }) {
   if (selector.attr != null) return true;
+  if (selector.axes.axis == AxesAxis.attribute) return true;
   // node-test
   final nodeTest = selector.axes.nodeTest;
   if (nodeTest != '*' && element.localName != nodeTest) return false;

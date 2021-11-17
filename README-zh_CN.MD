@@ -21,6 +21,18 @@ final result2 = XPath(htmlDom).query('//div');
 
 // 或直接通过Element查询
 final result3 = htmlDom.queryXPath('//div');
+
+// 获取查询结果的所有节点
+print(result1.elements);
+
+// 获取查询结果的第一个节点
+print(result1.element);
+
+// 获取查询结果的所有属性
+print(result1.attrs);
+
+// 获取查询结果的第一个有效属性
+print(result1.attr);
 ```
 
 更多的例子可以参考[展示例](https://github.com/simonkimi/xpath_for_html/blob/master/example/example.dart)
@@ -52,11 +64,3 @@ final result3 = htmlDom.queryXPath('//div');
 |[@attr^='value']|[attr^="value"]|选择其 attr 属性值以 "value" 开头的元素。|
 |[@attr$='value']|[attr$="value"]|选择其 attr 属性值以 "value" 结尾的元素。|
 |[@attr*='value']|[attr*="value"]|选择其 attr 属性值中包含 "value" 子串的元素。|
-
-
-## 暂不支持语法
-以下语法因为种种原因暂不支持, 如需要请提issue
-
-|名称|说明|
-|---|---|
-|attribute::*|选取当前节点的所有属性。|

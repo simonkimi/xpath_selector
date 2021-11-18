@@ -51,7 +51,8 @@ void main() {
     expect(html.queryXPath('//td[@id="td1"]/@*').attrs,
         html.query('#td1')!.attributes.values);
     expect(html.queryXPath('//div/a/text()').attr, html.query('a')!.text);
-    expect(html.queryXPath('//tr/node()').elements, html.query('tr')!.childrenNode);
+    expect(html.queryXPath('//tr/node()').elements,
+        html.query('tr')!.childrenNode);
   });
 
   test('simple predicate', () {

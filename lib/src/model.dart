@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:html/dom.dart';
 import 'package:xml/xml.dart';
 
@@ -10,7 +8,7 @@ abstract class XPathNode {
 
   List<XPathNode> get childrenNode;
 
-  LinkedHashMap<Object, String> get attributes;
+  Map<String, String> get attributes;
 }
 
 abstract class XPathElement extends XPathNode {
@@ -40,7 +38,7 @@ class XmlNodeTree implements XPathNode {
   final XmlNode _node;
 
   @override
-  LinkedHashMap<Object, String> get attributes => LinkedHashMap();
+  Map<String, String> get attributes => {};
 
   @override
   List<XPathNode> get childrenNode =>
@@ -51,6 +49,18 @@ class XmlNodeTree implements XPathNode {
 
   @override
   String? get text => _node.text;
+
+  @override
+  bool operator ==(Object other) =>
+      other is XmlNodeTree ? other._node == _node : false;
+
+  @override
+  int get hashCode => _node.hashCode;
+
+  XmlNode get node => _node;
+
+  @override
+  String toString() => _node.toString();
 }
 
 class XmlElementTree extends XmlNodeTree implements XPathElement {
@@ -78,6 +88,22 @@ class XmlElementTree extends XmlNodeTree implements XPathElement {
   @override
   XPathElement? get previousElementSibling =>
       buildNullElement(_element.previousElementSibling);
+
+  @override
+  bool operator ==(Object other) =>
+      other is XmlElementTree ? other._element == _element : false;
+
+  @override
+  int get hashCode => _element.hashCode;
+
+  XmlElement get element => _element;
+
+  @override
+  String toString() => _element.toString();
+
+  @override
+  Map<String, String> get attributes => Map.fromEntries(
+      _element.attributes.map((e) => MapEntry(e.name.local, e.value)));
 }
 
 class HtmlNodeTree implements XPathNode {
@@ -101,7 +127,8 @@ class HtmlNodeTree implements XPathNode {
   List<HtmlNodeTree> get childrenNode => _node.nodes.map(buildNode).toList();
 
   @override
-  LinkedHashMap<Object, String> get attributes => _node.attributes;
+  Map<String, String> get attributes =>
+      _node.attributes.map((key, value) => MapEntry(key.toString(), value));
 
   @override
   String? get text => _node.text;

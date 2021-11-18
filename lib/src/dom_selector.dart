@@ -1,5 +1,3 @@
-
-
 import 'model.dart';
 
 /// Select top element

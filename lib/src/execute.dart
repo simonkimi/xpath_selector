@@ -289,7 +289,7 @@ bool? _attrMatch(XPathNode element, RegExpMatch? reg) {
     final attrName = reg.namedGroup('attr')!;
     final op = reg.namedGroup('op')!;
     final value = reg.namedGroup('value')!;
-    final attr = element.attributes[attrName];
+    final attr = element.attributes[attrName.trim()];
     if (attr == null) return false;
     return opString(attr, value, op);
   }

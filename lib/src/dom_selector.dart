@@ -1,41 +1,45 @@
-import 'package:html/dom.dart';
+
+
+import 'model.dart';
 
 /// Select top element
-Element? top(Element? e) {
+XPathNode? top(XPathNode? e) {
   if (e == null) return null;
-  while (e!.parent != null) {
-    e = e.parent!;
+  while (e!.parentNode != null) {
+    e = e.parentNode!;
   }
   return e;
 }
 
 /// Selects all ancestors (parent, grandparent, etc.) of the current node
-List<Element> ancestor(Element? e) {
-  final result = <Element>[];
+List<XPathNode> ancestor(XPathNode? e) {
+  final result = <XPathNode>[];
   if (e == null) return result;
   var currentDom = e;
 
-  while (currentDom.parent != null) {
-    result.add(currentDom.parent!);
-    currentDom = currentDom.parent!;
+  while (currentDom.parentNode != null) {
+    if (currentDom.parentNode! is XPathElement) {
+      result.add(currentDom.parentNode!);
+    }
+    currentDom = currentDom.parentNode!;
   }
   return result;
 }
 
 /// Selects all ancestors (parent, grandparent, etc.) of the current node and the current node itself
-List<Element> ancestorOrSelf(Element? e) {
-  if (e == null) return <Element>[];
-  return <Element>[e, ...ancestor(e)];
+List<XPathNode> ancestorOrSelf(XPathNode? e) {
+  if (e == null) return <XPathNode>[];
+  return <XPathNode>[e, ...ancestor(e)];
 }
 
 /// Selects all children of the current node
-List<Element> child(Element? e) => e?.children ?? [];
+List<XPathNode> child(XPathNode? e) => e?.childrenNode ?? [];
 
 /// Selects all descendants (children, grandchildren, etc.) of the current node
-List<Element> descendant(Element? e) {
-  final result = <Element>[];
+List<XPathNode> descendant(XPathNode? e) {
+  final result = <XPathNode>[];
   if (e == null) return result;
-  for (final child in e.children) {
+  for (final child in e.childrenNode) {
     result.add(child);
     result.addAll(descendant(child));
   }
@@ -43,18 +47,18 @@ List<Element> descendant(Element? e) {
 }
 
 /// Selects all descendants (children, grandchildren, etc.) of the current node and the current node itself
-List<Element> descentOrSelf(Element? e) {
-  if (e == null) return <Element>[];
-  return <Element>[e, ...descendant(e)];
+List<XPathNode> descentOrSelf(XPathNode? e) {
+  if (e == null) return <XPathNode>[];
+  return <XPathNode>[e, ...descendant(e)];
 }
 
 /// Selects everything in the document after the closing tag of the current node
-List<Element> following(Element root, Element? e) {
-  final result = <Element>[];
+List<XPathNode> following(XPathNode root, XPathNode? e) {
+  final result = <XPathNode>[];
   var elementFound = false;
 
-  void dfs(Element parent) {
-    for (final child in parent.children) {
+  void dfs(XPathNode parent) {
+    for (final child in parent.childrenNode) {
       if (child == e) {
         elementFound = true;
       }
@@ -70,8 +74,8 @@ List<Element> following(Element root, Element? e) {
 }
 
 /// Selects all siblings after the current node
-List<Element> followingSibling(Element? e) {
-  final result = <Element>[];
+List<XPathElement> followingSibling(XPathElement? e) {
+  final result = <XPathElement>[];
   if (e == null) return result;
   var currentDom = e;
   while (currentDom.nextElementSibling != null) {
@@ -82,8 +86,8 @@ List<Element> followingSibling(Element? e) {
 }
 
 /// Selects all siblings before the current node
-List<Element> precedingSibling(Element? e) {
-  final result = <Element>[];
+List<XPathElement> precedingSibling(XPathElement? e) {
+  final result = <XPathElement>[];
   if (e == null) return result;
   var currentDom = e;
   while (currentDom.previousElementSibling != null) {

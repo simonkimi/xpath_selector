@@ -1,8 +1,9 @@
+import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:xpath_for_html/src/dom_selector.dart';
-import 'package:xpath_for_html/xpath_for_html.dart';
+import 'package:xpath_for_xml/src/dom_selector.dart';
+import 'package:xpath_for_xml/xpath_for_xml.dart';
 
 final String htmlString = '''
 <html lang="en">
@@ -17,7 +18,7 @@ final String htmlString = '''
               <td id="td2" class="first1">2</td>
               <td id="td3" class="first2">3</td>
               <td id="td4" class="first2 form">4</td>
-              
+
               <td id="td5" class="second1">one</td>
               <td id="td6" class="second1">two</td>
               <td id="td7" class="second2">three</td>
@@ -34,29 +35,33 @@ final String htmlString = '''
 
 final html = parse(htmlString).documentElement!;
 
+extension TestTransfer on Element {
+  XPathNode? query(String selector) =>
+      HtmlNodeTree.buildNullNode(querySelector(selector));
+
+  List<XPathNode> queryAll(String selector) =>
+      querySelectorAll(selector).map((e) => HtmlNodeTree.buildNode(e)).toList();
+}
+
 void main() {
   test('basic', () {
-    expect(html.queryXPath('//div/a').element, html.querySelector('a'));
+    expect(html.queryXPath('//div/a').element, html.query('a'));
     expect(html.queryXPath('//div/a/@href').attr,
-        html.querySelector('a')!.attributes['href']);
+        html.query('a')!.attributes['href']);
     expect(html.queryXPath('//td[@id="td1"]/@*').attrs,
-        html.querySelector('#td1')!.attributes.values);
-    expect(
-        html.queryXPath('//div/a/text()').attr, html.querySelector('a')!.text);
-    expect(html.queryXPath('//tr/node()').elements,
-        html.querySelector('tr')!.children);
+        html.query('#td1')!.attributes.values);
+    expect(html.queryXPath('//div/a/text()').attr, html.query('a')!.text);
+    expect(html.queryXPath('//tr/node()').elements, html.query('tr')!.childrenNode);
   });
 
   test('simple predicate', () {
-    expect(html.queryXPath('//tr/td[1]').element, html.querySelector('#td1'));
-    expect(
-        html.queryXPath('//tr/td[last()]').element, html.querySelector('#td8'));
-    expect(html.queryXPath('//tr/td[last()-1]').element,
-        html.querySelector('#td7'));
+    expect(html.queryXPath('//tr/td[1]').element, html.query('#td1'));
+    expect(html.queryXPath('//tr/td[last()]').element, html.query('#td8'));
+    expect(html.queryXPath('//tr/td[last()-1]').element, html.query('#td7'));
     expect(html.queryXPath('//tr/td[position()<3]').elements,
-        [html.querySelector('#td1'), html.querySelector('#td2')]);
+        [html.query('#td1'), html.query('#td2')]);
     expect(html.queryXPath('//tr/td[position() < 3]').elements,
-        [html.querySelector('#td1'), html.querySelector('#td2')]);
+        [html.query('#td1'), html.query('#td2')]);
   });
 
   test('complex predicate', () {
@@ -64,51 +69,47 @@ void main() {
         html
             .queryXPath('//tr/td[position() >= 2 and @class="second1"]')
             .elements,
-        [html.querySelector('#td5'), html.querySelector('#td6')]);
+        [html.query('#td5'), html.query('#td6')]);
     expect(
         html.queryXPath('//tr/td[position() >= 2 and position() < 4]').elements,
-        [html.querySelector('#td2'), html.querySelector('#td3')]);
+        [html.query('#td2'), html.query('#td3')]);
     expect(
         html.queryXPath('//tr/td[position() <= 1 or position() >= 8]').elements,
-        [html.querySelector('#td1'), html.querySelector('#td8')]);
+        [html.query('#td1'), html.query('#td8')]);
   });
 
   test('extend predicate', () {
     expect(html.queryXPath('//tr/td[@class="first1"]').elements,
-        html.querySelectorAll('td[class="first1"]'));
+        html.queryAll('td[class="first1"]'));
     expect(html.queryXPath('//tr/td[@class^="fir"]').elements,
-        html.querySelectorAll('td[class^="fir"]'));
+        html.queryAll('td[class^="fir"]'));
     expect(html.queryXPath('//tr/td[@class~="form"]').elements,
-        html.querySelectorAll('td[class~="form"]'));
+        html.queryAll('td[class~="form"]'));
     expect(html.queryXPath(r'//tr/td[@class$="1"]').elements,
-        html.querySelectorAll(r'td[class$="1"]'));
+        html.queryAll(r'td[class$="1"]'));
   });
 
   test('combination query', () {
     expect(html.queryXPath('//div/a|//div[@class="head"]').elements,
-        [html.querySelector('a'), html.querySelector('.head')]);
+        [html.query('a'), html.query('.head')]);
     expect(html.queryXPath('//div/a | //div[@class="head"]').elements,
-        [html.querySelector('a'), html.querySelector('.head')]);
+        [html.query('a'), html.query('.head')]);
   });
 
   test('axes', () {
     expect(html.queryXPath('//td[@id="td1"]/attribute::class').attr,
-        html.querySelector('#td1')!.attributes['class']);
+        html.query('#td1')!.attributes['class']);
     expect(html.queryXPath('//td[@id="td1"]/attribute::*').attrs,
-        html.querySelector('#td1')!.attributes.values);
-    expect(html.queryXPath('//td/parent::*').element, html.querySelector('tr'));
-    expect(
-        html.queryXPath('//tr/child::*').elements, html.querySelectorAll('td'));
+        html.query('#td1')!.attributes.values);
+    expect(html.queryXPath('//td/parent::*').element, html.query('tr'));
+    expect(html.queryXPath('//tr/child::*').elements, html.queryAll('td'));
     expect(html.queryXPath('//td/ancestor::*').elements,
-        ancestor(html.querySelector('td')));
+        ancestor(html.query('td')));
     expect(html.queryXPath('//tr/ancestor-or-self::*').elements,
-        ancestorOrSelf(html.querySelector('tr')));
+        ancestorOrSelf(html.query('tr')));
     expect(html.queryXPath('//table/descendant::td').elements,
-        html.querySelectorAll('td'));
-    expect(html.queryXPath('//table//tbody/descendant-or-self::*').elements, [
-      html.querySelector('tbody'),
-      html.querySelector('tr'),
-      ...html.querySelectorAll('td')
-    ]);
+        html.queryAll('td'));
+    expect(html.queryXPath('//table//tbody/descendant-or-self::*').elements,
+        [html.query('tbody'), html.query('tr'), ...html.queryAll('td')]);
   });
 }

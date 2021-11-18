@@ -1,6 +1,7 @@
-import 'package:xpath_for_html/src/reg.dart';
-import 'package:xpath_for_html/src/selector.dart';
+import 'package:xpath_for_xml/src/reg.dart';
+import 'package:xpath_for_xml/src/selector.dart';
 
+import 'model.dart';
 import 'reg.dart';
 
 List<List<Selector>> parseSelectGroup(String xpath) {
@@ -126,9 +127,37 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
     return Selector(
       selectorType: selectorType,
       axes: SelectorAxes(
-        nodeTest: '*',
+        nodeTest: 'node()',
         axis: AxesAxis.child,
       ),
     );
   }
+}
+
+List<String?> parseAttr({
+  required List<Selector> selectorList,
+  required List<XPathNode> elements,
+}) {
+  final result = <String?>[];
+  if (selectorList.isNotEmpty) {
+    final last = selectorList.last;
+    for (final element in elements) {
+      if (last.attr != null) {
+        if (last.attr == '*') {
+          result.addAll(element.attributes.values);
+        } else {
+          result.add(element.attributes[last.attr]);
+        }
+      } else if (last.function == SelectorFunction.text) {
+        result.add(element.text);
+      } else if (last.axes.axis == AxesAxis.attribute) {
+        if (last.axes.nodeTest == '*') {
+          result.addAll(element.attributes.values);
+        } else {
+          result.add(element.attributes[last.axes.nodeTest]);
+        }
+      }
+    }
+  }
+  return result;
 }

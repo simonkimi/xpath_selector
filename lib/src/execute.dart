@@ -1,119 +1,59 @@
 import 'package:expressions/expressions.dart';
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
-import 'package:xpath_for_html/src/dom_selector.dart';
-import 'package:xpath_for_html/src/parser.dart';
-import 'package:xpath_for_html/src/selector.dart';
-import 'package:xpath_for_html/src/utils.dart';
+import 'package:xpath_for_xml/src/dom_selector.dart';
+import 'package:xpath_for_xml/src/selector.dart';
+import 'package:xpath_for_xml/src/utils.dart';
 
+import 'model.dart';
 import 'reg.dart';
 import 'op.dart';
 
-/// Result of XPath
-class XPathResult {
-  XPathResult(this.elements, this.attrs);
-
-  /// Get all nodes of query results
-  final List<Element> elements;
-
-  /// Get all properties of query results
-  final List<String?> attrs;
-
-  /// Get the first node of query results
-  Element? get element => elements.isNotEmpty ? elements.first : null;
-
-  /// Get the first valid property of the query result (not null)
-  String? get attr => attrs.firstWhere((e) => e != null, orElse: () => null);
-}
-
-class XPath {
-  /// Create XPath by html element
-  XPath(this.root);
-
-  /// Create XPath by html string
-  factory XPath.html(String html) {
-    final dom = parse(html).documentElement;
-    if (dom == null) throw UnsupportedError('No html');
-    return XPath(dom);
-  }
-
-  final Element root;
-
-  /// query XPath
-  XPathResult query(String xpath) {
-    final result = <Element>[];
-    final resultAttrs = <String?>[];
-    final selectorGroup = parseSelectGroup(xpath);
-    for (final selector in selectorGroup) {
-      final newResult = _execute(selectorList: selector, element: root)
-          .where((e) => !result.contains(e))
-          .toList();
-      result.addAll(newResult);
-      resultAttrs.addAll(_parseAttr(
-        selectorList: selector,
-        elements: newResult.toList(),
-      ));
-    }
-    return XPathResult(result, resultAttrs);
-  }
-}
-
-List<String?> _parseAttr({
+List<XPathNode> execute({
   required List<Selector> selectorList,
-  required List<Element> elements,
+  required XPathNode element,
 }) {
-  final result = <String?>[];
-  if (selectorList.isNotEmpty) {
-    final last = selectorList.last;
-    for (final element in elements) {
-      if (last.attr != null) {
-        if (last.attr == '*') {
-          result.addAll(element.attributes.values);
-        } else {
-          result.add(element.attributes[last.attr]);
-        }
-      } else if (last.function == SelectorFunction.text) {
-        result.add(element.text);
-      } else if (last.axes.axis == AxesAxis.attribute) {
-        if (last.axes.nodeTest == '*') {
-          result.addAll(element.attributes.values);
-        } else {
-          result.add(element.attributes[last.axes.nodeTest]);
-        }
-      }
-    }
-  }
-  return result;
-}
-
-List<Element> _execute({
-  required List<Selector> selectorList,
-  required Element element,
-}) {
-  var tmp = <Element>[element];
+  var tmp = <XPathNode>[element];
 
   for (final selector in selectorList) {
-    final rootMatch = <Element>[];
+    final rootMatch = <XPathNode>[];
     for (final element in tmp) {
-      final pathElement = _matchSelectPath(selector, element);
-      final selectorMatch = <Element>[];
-      for (final element in pathElement) {
-        final axisElement = _matchAxis(selector, element);
+      final pathXPathNode = _matchSelectPath(selector, element);
+      final selectorMatch = <XPathNode>[];
+      for (final element in pathXPathNode) {
+        final axisXPathNode = _matchAxis(selector, element);
         final removeIndex = [];
-        for (var i = 0; i < axisElement.length; i++) {
-          final element = axisElement[i];
+
+        // _matchSelector
+        for (var i = 0; i < axisXPathNode.length; i++) {
+          final element = axisXPathNode[i];
           if (!_matchSelector(
               selector: selector,
               element: element,
               position: i,
-              length: axisElement.length)) {
+              length: axisXPathNode.length)) {
             removeIndex.add(i);
           }
         }
         for (final index in removeIndex.reversed) {
-          axisElement.removeAt(index);
+          axisXPathNode.removeAt(index);
         }
-        selectorMatch.addAllIfNotExist(axisElement);
+        removeIndex.clear();
+
+        // matchPredicates
+        for (var i = 0; i < axisXPathNode.length; i++) {
+          final element = axisXPathNode[i];
+          if (!_matchPredicates(
+              selector: selector,
+              element: element,
+              position: i,
+              length: axisXPathNode.length)) {
+            removeIndex.add(i);
+          }
+        }
+        for (final index in removeIndex.reversed) {
+          axisXPathNode.removeAt(index);
+        }
+
+        selectorMatch.addAllIfNotExist(axisXPathNode);
       }
       rootMatch.addAllIfNotExist(selectorMatch);
     }
@@ -123,55 +63,58 @@ List<Element> _execute({
 }
 
 /// Get element by path
-List<Element> _matchSelectPath(Selector selector, Element element) {
-  final waitingSelect = <Element>[];
+List<XPathNode> _matchSelectPath(Selector selector, XPathNode node) {
+  final waitingSelect = <XPathNode>[];
   switch (selector.selectorType) {
     case SelectorType.descendant:
-      waitingSelect.addAllIfNotExist(descentOrSelf(element));
+      waitingSelect.addAllIfNotExist(descentOrSelf(node));
       break;
     case SelectorType.self:
-      waitingSelect.addIfNotExist(element);
+      waitingSelect.addIfNotExist(node);
       break;
   }
   return waitingSelect;
 }
 
 /// Get element by Axis
-List<Element> _matchAxis(Selector selector, Element element) {
-  final waitingSelect = <Element>[];
+List<XPathNode> _matchAxis(Selector selector, XPathNode node) {
+  final waitingSelect = <XPathNode>[];
   switch (selector.axes.axis) {
     case AxesAxis.child:
     case null:
-      waitingSelect.addAllIfNotExist(element.children);
+      waitingSelect.addAllIfNotExist(node.childrenNode);
       break;
     case AxesAxis.ancestor:
-      waitingSelect.addAllIfNotExist(ancestor(element));
+      waitingSelect.addAllIfNotExist(ancestor(node));
       break;
     case AxesAxis.ancestorOrSelf:
-      waitingSelect.addAllIfNotExist(ancestorOrSelf(element));
+      waitingSelect.addAllIfNotExist(ancestorOrSelf(node));
       break;
     case AxesAxis.descendant:
-      waitingSelect.addAllIfNotExist(descendant(element));
+      waitingSelect.addAllIfNotExist(descendant(node));
       break;
     case AxesAxis.descendantOrSelf:
-      waitingSelect.addAllIfNotExist(descentOrSelf(element));
+      waitingSelect.addAllIfNotExist(descentOrSelf(node));
       break;
     case AxesAxis.following:
-      waitingSelect
-          .addAllIfNotExist(following(top(element) ?? element, element));
-      break;
-    case AxesAxis.followingSibling:
-      waitingSelect.addAllIfNotExist(followingSibling(element));
+      waitingSelect.addAllIfNotExist(following(top(node) ?? node, node));
       break;
     case AxesAxis.parent:
-      if (element.parent != null) waitingSelect.add(element.parent!);
+      if (node.parentNode != null) waitingSelect.add(node.parentNode!);
+      break;
+    case AxesAxis.followingSibling:
+      if (node is XPathElement) {
+        waitingSelect.addAllIfNotExist(followingSibling(node));
+      }
       break;
     case AxesAxis.precedingSibling:
-      waitingSelect.addAllIfNotExist(precedingSibling(element));
+      if (node is XPathElement) {
+        waitingSelect.addAllIfNotExist(precedingSibling(node));
+      }
       break;
     case AxesAxis.attribute:
     case AxesAxis.self:
-      waitingSelect.addIfNotExist(element);
+      waitingSelect.addIfNotExist(node);
       break;
   }
   return waitingSelect;
@@ -180,23 +123,24 @@ List<Element> _matchAxis(Selector selector, Element element) {
 /// Is element match [Selector]'s [selector.axes.nodeTest] and [predicate]
 bool _matchSelector({
   required Selector selector,
-  required Element element,
+  required XPathNode element,
   required int position,
   required int length,
 }) {
   if (selector.attr != null) return true;
   if (selector.axes.axis == AxesAxis.attribute) return true;
+
   // node-test
   final nodeTest = selector.axes.nodeTest;
-  if (nodeTest != '*' && element.localName != nodeTest) return false;
-  // predicate
-  if (selector.axes.predicate != null) {
-    return _matchPredicates(
-      position: position,
-      length: length,
-      element: element,
-      selector: selector,
-    );
+
+  if (nodeTest != 'node()') {
+    if (element is! XPathElement) {
+      return false;
+    }
+
+    if (nodeTest != '*' && element.name != nodeTest) {
+      return false;
+    }
   }
   return true;
 }
@@ -204,7 +148,7 @@ bool _matchSelector({
 /// Is element match [selector.axes.predicate]
 bool _matchPredicates({
   required Selector selector,
-  required Element element,
+  required XPathNode element,
   required int position,
   required int length,
 }) {
@@ -237,7 +181,7 @@ bool _matchPredicates({
       );
     }
 
-    // compare
+    // Compare
     return _singleCompare(
       predicate: predicate,
       element: element,
@@ -277,7 +221,7 @@ bool _singlePosition({
 
 bool _multipleCompare({
   required String predicate,
-  required Element element,
+  required XPathNode element,
   required int position,
   required int length,
 }) {
@@ -310,7 +254,7 @@ bool _multipleCompare({
 
 bool _singleCompare({
   required String predicate,
-  required Element element,
+  required XPathNode element,
   required int position,
   required int length,
 }) {
@@ -340,7 +284,7 @@ bool? _positionMatch(int position, RegExpMatch? reg) {
   return null;
 }
 
-bool? _attrMatch(Element element, RegExpMatch? reg) {
+bool? _attrMatch(XPathNode element, RegExpMatch? reg) {
   if (reg != null) {
     final attrName = reg.namedGroup('attr')!;
     final op = reg.namedGroup('op')!;
@@ -352,14 +296,14 @@ bool? _attrMatch(Element element, RegExpMatch? reg) {
   return null;
 }
 
-bool? _childMatch(Element element, RegExpMatch? reg) {
+bool? _childMatch(XPathNode element, RegExpMatch? reg) {
   if (reg != null) {
     final childName = reg.namedGroup('child');
     final op = reg.namedGroup('op')!;
     final num = int.tryParse(reg.namedGroup('num')!) ?? 0;
-    final childValue = element.children
-        .where((e) => e.localName == childName)
-        .map((e) => int.tryParse(e.text))
+    final int? childValue = element.childrenNode
+        .where((e) => e is XPathElement && e.name == childName)
+        .map((e) => int.tryParse(e.text ?? ''))
         .firstWhere((e) => e != null, orElse: () => null);
     if (childValue == null) return false;
     return opCompare(childValue, num, op);

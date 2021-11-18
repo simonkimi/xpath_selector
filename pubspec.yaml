@@ -1,4 +1,4 @@
-name: xpath_for_html
+name: xpath_for_xml
 description: XPath package for HTML to locate DOM nodes, most XPath syntax is supported.
 version: 1.0.2
 homepage: https://github.com/simonkimi/xpath_for_html
@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   expressions: ^0.2.3
+  xml: ^5.3.1
   html: ^0.15.0
 
 dev_dependencies:

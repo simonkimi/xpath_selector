@@ -1,5 +1,5 @@
 import 'package:html/parser.dart';
-import 'package:xpath_for_html/xpath_for_html.dart';
+import 'package:xpath_for_xml/xpath_for_xml.dart';
 
 final String htmlString = '''
 <html lang="en">
@@ -14,7 +14,7 @@ final String htmlString = '''
               <td class="first1">2</td>
               <td class="first2">3</td>
               <td class="first2">4</td>
-              
+
               <td class="second1">one</td>
               <td class="second1">two</td>
               <td class="second1">three</td>
@@ -33,11 +33,13 @@ void main() {
   // You can create xpath selector by html
   final xpath = XPath.html(htmlString);
 
+  print(xpath.query('//td[1]').elements);
+
   print(xpath.query('//div/a').elements);
 
   // Or by html dom
   final htmlDom = parse(htmlString).documentElement!;
-  final xpathFrom = XPath(htmlDom);
+  final xpathFrom = XPath.htmlElement(htmlDom);
   print(xpathFrom.query('//div/a').elements);
 
   // Or by element

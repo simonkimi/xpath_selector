@@ -1,7 +1,7 @@
 import 'package:expressions/expressions.dart';
-import 'package:xpath_for_xml/src/dom_selector.dart';
-import 'package:xpath_for_xml/src/selector.dart';
-import 'package:xpath_for_xml/src/utils.dart';
+import 'package:xpath_selector/src/dom_selector.dart';
+import 'package:xpath_selector/src/selector.dart';
+import 'package:xpath_selector/src/utils.dart';
 
 import 'model.dart';
 import 'reg.dart';

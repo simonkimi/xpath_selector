@@ -1,9 +1,9 @@
 import 'package:html/dom.dart' as html;
 import 'package:html/parser.dart' as html;
-import 'package:xpath_for_xml/src/parser.dart';
+import 'package:xpath_selector/src/parser.dart';
 import 'package:xml/xml.dart' as xml;
 
-import '../xpath_for_xml.dart';
+import '../xpath_selector.dart';
 import 'execute.dart';
 import 'model.dart';
 

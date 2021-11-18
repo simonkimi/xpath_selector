@@ -1,5 +1,5 @@
 import 'package:html/parser.dart';
-import 'package:xpath_for_xml/xpath_for_xml.dart';
+import 'package:xpath_selector/xpath_selector.dart';
 
 final String htmlString = '''
 <html lang="en">

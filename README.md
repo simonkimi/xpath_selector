@@ -1,29 +1,32 @@
-# xpath_for_html
+# xpath_selector
 
-[![Pub](https://img.shields.io/pub/v/xpath_for_html.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
+[![Pub](https://img.shields.io/pub/v/xpath_selector.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
 
-An XPath selector for locating HTML elements
+An XPath selector for locating Html and Xml elements
 
-English | [中文文档](https://github.com/simonkimi/xpath_for_html/blob/master/README-zh_CN.MD)
+English | [中文文档](https://github.com/simonkimi/xpath_selector/blob/master/README-zh_CN.MD)
 
 ## Easy to use
 
 You have three ways to do XPath queries
 
 ```dart
-
 final html = '''<html><div></div></html>''';
 final htmlDom = parse(htmlString).documentElement!;
+final xml = '''<root><child></child></root>''';
+final xmlRoot = XmlDocument.parse().rootElement;
 
 // Create by html string
-
 final result1 = XPath.html(html).query('//div');
+final result2 = XPath.xml(html).query('//child');
 
-// Or through the dom of the HTML package
-final result2 = XPath(htmlDom).query('//div');
+// Or through the dom of the HTML or Xml package
+final result3 = XPath.htmlElement(htmlDom).query('//div');
+final result4 = XPath.xmlElement(xmlRoot).query('//child');
 
 // Or query directly through element
-final result3 = htmlDom.queryXPath('//div');
+final result5 = htmlDom.queryXPath('//div');
+final result6 = xmlRoot.queryXPath('//child');
 
 // Get all nodes of query results
 print(result1.elements);
@@ -42,23 +45,8 @@ print(result1.attr);
 More examples can be referred to[example](https://github.com/simonkimi/xpath_for_html/blob/master/example/example.dart)
 or [test](https://github.com/simonkimi/xpath_for_html/blob/master/test/test.dart)
 
-## Basic syntax
-
-|Expression|Css or html|Description|Attr|
-|---|---|---|---|
-|//|Selects nodes in the document from the current node that match the selection no matter where they are|
-|/|Selects from the root node||
-|..|Selects the parent of the current node| |
-|tag[n]|nth-child(n)|Select by index|
-|tag[@key="value"]|tag[key="value"]|Filter properties|
-|node()|.children|child|
-|text()|.text|text|√|
-|@attr| |Selects attributes|√|
-
-For more syntax, please refer to[XPath](https://www.w3school.com/xpath/xpath_syntax.asp)
 
 ## Extended syntax
-
 
 In the attribute selector, the parser extends the following attribute selector in CSS style
 

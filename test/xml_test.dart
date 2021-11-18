@@ -1,7 +1,7 @@
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 import 'package:xml/xml.dart';
-import 'package:xpath_for_xml/xpath_for_xml.dart';
+import 'package:xpath_selector/xpath_selector.dart';
 
 final input = '''
 <bookstore>

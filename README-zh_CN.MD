@@ -1,28 +1,28 @@
-# xpath_for_html
+# xpath_selector
 
-[![Pub](https://img.shields.io/pub/v/xpath_for_html.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
+[![Pub](https://img.shields.io/pub/v/xpath_selector.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
 
-一款用于定位Html元素的XPath选择器
+一款用于定位Html和Xml元素的XPath选择器
 
-[English](https://github.com/simonkimi/xpath_for_html/blob/master/README.md) | 中文文档
+[English](https://github.com/simonkimi/xpath_selector/blob/master/README.md) | 中文文档
 
 ## 轻松使用
 
 您有三种方法可以进行XPath查询
 
 ```dart
-
-final html = '''<html><div></div></html>''';
-final htmlDom = parse(htmlString).documentElement!;
-
 // 通过字符串创建
 final result1 = XPath.html(html).query('//div');
+final result2 = XPath.xml(html).query('//child');
 
-// 或通过html包的dom创建
-final result2 = XPath(htmlDom).query('//div');
+// 或通过htmlh或xml包的dom创建
+final result3 = XPath.htmlElement(htmlDom).query('//div');
+final result4 = XPath.xmlElement(xmlRoot).query('//child');
 
 // 或直接通过Element查询
-final result3 = htmlDom.queryXPath('//div');
+final result5 = htmlDom.queryXPath('//div');
+final result6 = xmlRoot.queryXPath('//child');
+
 
 // 获取查询结果的所有节点
 print(result1.elements);
@@ -37,23 +37,8 @@ print(result1.attrs);
 print(result1.attr);
 ```
 
-更多的例子可以参考[展示例](https://github.com/simonkimi/xpath_for_html/blob/master/example/example.dart)
-或 [测试例](https://github.com/simonkimi/xpath_for_html/blob/master/test/test.dart)
+更多的例子可以参考 [Xml测试例](https://github.com/simonkimi/xpath_selector/blob/master/test/xml_test.dart) | [Html测试例](https://github.com/simonkimi/xpath_selector/blob/master/test/html_test.dart)
 
-## 基础语法
-
-|表达式|css或html|描述|存在attr|
-|---|---|---|---|
-|//|从匹配选择的当前节点选择文档中的节点，而不考虑它们的位置。|
-|/|从根节点选取||
-|..|选取当前节点的父节点| |
-|tag[n]|nth-child(n)|按位置选择|
-|tag[@key="value"]|tag[key="value"]|选择属性|
-|node()|.children|子节点|
-|text()|.text|内容|√|
-|@attr| |选取属性|√|
-
-更多语法请参照[XPath语法](https://www.w3school.com.cn/xpath/xpath_syntax.asp)
 
 ## 扩展语法
 

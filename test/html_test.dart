@@ -2,7 +2,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:xpath_selector/src/dom_selector.dart';
+import 'package:xpath_selector/src/utils/dom_selector.dart';
 import 'package:xpath_selector/xpath_selector.dart';
 
 final String htmlString = '''

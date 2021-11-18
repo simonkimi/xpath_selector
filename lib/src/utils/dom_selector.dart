@@ -1,4 +1,4 @@
-import 'model.dart';
+import '../model/base.dart';
 
 /// Select top element
 XPathNode? top(XPathNode? e) {

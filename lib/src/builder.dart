@@ -3,9 +3,10 @@ import 'package:html/parser.dart' as html;
 import 'package:xpath_selector/src/parser.dart';
 import 'package:xml/xml.dart' as xml;
 
-import '../xpath_selector.dart';
 import 'execute.dart';
-import 'model.dart';
+import 'model/base.dart';
+import 'model/html.dart';
+import 'model/xml.dart';
 
 /// Result of XPath
 class XPathResult {

@@ -1,11 +1,10 @@
 import 'package:expressions/expressions.dart';
-import 'package:xpath_selector/src/dom_selector.dart';
+import 'package:xpath_selector/src/utils/dom_selector.dart';
 import 'package:xpath_selector/src/selector.dart';
-import 'package:xpath_selector/src/utils.dart';
-
-import 'model.dart';
+import 'package:xpath_selector/src/utils/utils.dart';
+import 'model/base.dart';
 import 'reg.dart';
-import 'op.dart';
+import 'utils/op.dart';
 
 List<XPathNode> execute({
   required List<Selector> selectorList,

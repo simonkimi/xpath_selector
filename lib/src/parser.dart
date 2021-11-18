@@ -1,7 +1,7 @@
 import 'package:xpath_selector/src/reg.dart';
 import 'package:xpath_selector/src/selector.dart';
 
-import 'model.dart';
+import 'model/base.dart';
 import 'reg.dart';
 
 List<List<Selector>> parseSelectGroup(String xpath) {

@@ -1,6 +1,6 @@
 # xpath_selector
 
-[![Pub](https://img.shields.io/pub/v/xpath_selector.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
+[![Pub](https://img.shields.io/pub/v/xpath_selector.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_selector)
 
 An XPath selector for locating Html and Xml elements
 
@@ -42,8 +42,7 @@ print(result1.attrs);
 print(result1.attr);
 ```
 
-More examples can be referred to[example](https://github.com/simonkimi/xpath_for_html/blob/master/example/example.dart)
-or [test](https://github.com/simonkimi/xpath_for_html/blob/master/test/test.dart)
+More examples can be referred to [Xml](https://github.com/simonkimi/xpath_selector/blob/master/test/xml_test.dart) | [Html](https://github.com/simonkimi/xpath_selector/blob/master/test/html_test.dart)
 
 
 ## Extended syntax

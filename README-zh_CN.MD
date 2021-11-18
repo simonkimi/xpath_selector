@@ -1,6 +1,6 @@
 # xpath_selector
 
-[![Pub](https://img.shields.io/pub/v/xpath_selector.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_for_html)
+[![Pub](https://img.shields.io/pub/v/xpath_selector.svg?style=flat-square)](https://pub.dartlang.org/packages/xpath_selector)
 
 一款用于定位Html和Xml元素的XPath选择器
 

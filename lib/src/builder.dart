@@ -25,7 +25,7 @@ class XPathResult {
 }
 
 class XPath {
-  /// Create XPath by html element
+  /// Create XPath by element
   XPath(this.root);
 
   final XPathNode root;
@@ -37,14 +37,17 @@ class XPath {
     return XPath(HtmlNodeTree(dom));
   }
 
+  /// Create XPath by html element
   factory XPath.htmlElement(html.Element element) =>
       XPath(HtmlNodeTree(element));
 
+  /// Create XPath by xml string
   factory XPath.xml(String value) {
     final dom = xml.XmlDocument.parse(value);
     return XPath(XmlNodeTree(dom));
   }
 
+  /// Create XPath by xml element
   factory XPath.xmlElement(xml.XmlElement element) =>
       XPath(XmlNodeTree(element));
 

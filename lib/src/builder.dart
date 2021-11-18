@@ -1,6 +1,7 @@
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
+import 'package:html/dom.dart' as html;
+import 'package:html/parser.dart' as html;
 import 'package:xpath_for_xml/src/parser.dart';
+import 'package:xml/xml.dart' as xml;
 
 import '../xpath_for_xml.dart';
 import 'execute.dart';
@@ -30,13 +31,22 @@ class XPath {
   final XPathNode root;
 
   /// Create XPath by html string
-  factory XPath.html(String html) {
-    final dom = parse(html).documentElement;
+  factory XPath.html(String value) {
+    final dom = html.parse(value).documentElement;
     if (dom == null) throw UnsupportedError('No html');
     return XPath(HtmlNodeTree(dom));
   }
 
-  factory XPath.htmlElement(Element element) => XPath(HtmlNodeTree(element));
+  factory XPath.htmlElement(html.Element element) =>
+      XPath(HtmlNodeTree(element));
+
+  factory XPath.xml(String value) {
+    final dom = xml.XmlDocument.parse(value);
+    return XPath(XmlNodeTree(dom));
+  }
+
+  factory XPath.xmlElement(xml.XmlElement element) =>
+      XPath(XmlNodeTree(element));
 
   /// query XPath
   XPathResult query(String xpath) {

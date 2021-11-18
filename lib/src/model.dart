@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:html/dom.dart';
+import 'package:xml/xml.dart';
 
 abstract class XPathNode {
   String? get text;
@@ -22,6 +23,61 @@ abstract class XPathElement extends XPathNode {
   XPathElement? get nextElementSibling;
 
   XPathElement? get previousElementSibling;
+}
+
+class XmlNodeTree implements XPathNode {
+  XmlNodeTree(this._node);
+
+  static XmlNodeTree? buildNullNode(XmlNode? node) => node == null
+      ? null
+      : node is XmlElement
+          ? XmlElementTree(node)
+          : XmlNodeTree(node);
+
+  static XmlNodeTree buildNode(XmlNode node) =>
+      node is XmlElement ? XmlElementTree(node) : XmlNodeTree(node);
+
+  final XmlNode _node;
+
+  @override
+  LinkedHashMap<Object, String> get attributes => LinkedHashMap();
+
+  @override
+  List<XPathNode> get childrenNode =>
+      _node.children.map((child) => XmlNodeTree.buildNode(child)).toList();
+
+  @override
+  XPathNode? get parentNode => XmlNodeTree.buildNullNode(_node.parent);
+
+  @override
+  String? get text => _node.text;
+}
+
+class XmlElementTree extends XmlNodeTree implements XPathElement {
+  XmlElementTree(this._element) : super(_element);
+
+  XmlElementTree? buildNullElement(XmlElement? element) =>
+      element != null ? XmlElementTree(element) : null;
+
+  final XmlElement _element;
+
+  @override
+  List<XPathElement> get children =>
+      _element.childElements.map((child) => XmlElementTree(child)).toList();
+
+  @override
+  String? get name => _element.name.local;
+
+  @override
+  XPathElement? get nextElementSibling =>
+      buildNullElement(_element.nextElementSibling);
+
+  @override
+  XPathElement? get parent => buildNullElement(_element.parentElement);
+
+  @override
+  XPathElement? get previousElementSibling =>
+      buildNullElement(_element.previousElementSibling);
 }
 
 class HtmlNodeTree implements XPathNode {
@@ -59,6 +115,8 @@ class HtmlNodeTree implements XPathNode {
 
   @override
   int get hashCode => _node.hashCode;
+
+  Node get node => _node;
 }
 
 class HtmlElementTree extends HtmlNodeTree implements XPathElement {
@@ -96,4 +154,6 @@ class HtmlElementTree extends HtmlNodeTree implements XPathElement {
 
   @override
   int get hashCode => _element.hashCode;
+
+  Element get element => _element;
 }

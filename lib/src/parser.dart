@@ -68,11 +68,22 @@ Selector _parseSelector(String input) {
         ));
   }
 
+  var nodeTest = match.namedGroup('node')!;
+  // special nodeTest
+  if (nodeTest == '.') {
+    axis = AxesAxis.self;
+    nodeTest = '*';
+  }
+  if (nodeTest == '..') {
+    axis = AxesAxis.parent;
+    nodeTest = '*';
+  }
+
   // with predicate
   return Selector(
       selectorType: selectorType,
       axes: SelectorAxes(
-        nodeTest: match.namedGroup('node')!,
+        nodeTest: nodeTest,
         axis: axis,
         predicate: match.namedGroup('predicate')!,
       ));

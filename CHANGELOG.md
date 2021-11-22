@@ -8,3 +8,6 @@
 
 ## 1.0.2
 - Fix `/.[@attr=value]` parse error
+
+## 1.0.3
+- Support `not(function(param1, param2))`

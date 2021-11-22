@@ -11,6 +11,9 @@ final simplePosition =
 final simpleLast = RegExp(r'last\(\s*\)\s*(?<op>\+|\-|\*|\/%\^)\s*(?<num>\d+)');
 final simpleSingleLast = RegExp(r'last\(\s*\)');
 
-final predicateAttr = RegExp(
-    r'''@(?<attr>\w+)(?<op>=|~=|\|=|\^=|\$=|\*=|!=)['"](?<value>.+)['"]''');
+final predicateEqual = RegExp(
+    r'''(?<function>[\w@\(\)]+)\s*(?<op>=|~=|\|=|\^=|\$=|\*=|!=)\s*['"](?<value>.+)['"]''');
 final functionNodeTest = RegExp(r'^(?<function>\w+)\(\s*\)$');
+
+final functionPredicate = RegExp(
+    r'''(?<not>(?:not)?)\s*\(?\s*(?<function>[\w-]{4,})\s*\(\s*(?<param1>.+?)\s*,\s*['"](?<param2>.+?)\s*['"]\s*\)\)?''');

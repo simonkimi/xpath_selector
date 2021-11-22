@@ -52,8 +52,6 @@ final String htmlString = '''
   </div>
 </div>
 
-
-
 </body>
 </html>
 ''';
@@ -137,5 +135,23 @@ void main() {
         html.queryAll('td'));
     expect(html.queryXPath('//table//tbody/descendant-or-self::*').elements,
         [html.query('tbody'), html.query('tr'), ...html.queryAll('td')]);
+  });
+
+  test('function', () {
+    expect(html.queryXPath('//td[contains(@class, "first")]').elements,
+        html.queryAll('td[class^="first"]'));
+    expect(html.queryXPath('//td[not(contains(@class, "first"))]').elements,
+        html.queryAll('td[class^="second"]'));
+    expect(html.queryXPath('//td[contains(text(), "one")]').elements,
+        html.queryAll('#td5'));
+    expect(html.queryXPath('//td[starts-with(text(), "o")]').elements,
+        html.queryAll('#td5'));
+    expect(html.queryXPath('//td[ends-with(text(), "e")]').elements,
+        [html.query('#td5'), html.query('#td7')]);
+    expect(
+        html
+            .queryXPath('//td[contains(@class, "first") and text() = "3"]')
+            .elements,
+        html.queryAll('#td3'));
   });
 }

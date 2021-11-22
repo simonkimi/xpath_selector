@@ -226,21 +226,31 @@ bool _multipleCompare({
 }) {
   var expression = predicate;
 
+  // [position() < 3]
   final positionReg = simplePosition.allMatches(predicate);
   for (final reg in positionReg) {
     final result = _positionMatch(position, reg)!;
     expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
   }
 
-  final attrReg = predicateAttr.allMatches(predicate);
-  for (final reg in attrReg) {
-    final result = _attrMatch(element, reg)!;
+  // [@attr='value'] [text()='']
+  final equalReg = predicateEqual.allMatches(predicate);
+  for (final reg in equalReg) {
+    final result = _equalMatch(element, reg)!;
     expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
   }
 
+  // [child>1]
   final childReg = predicateChild.allMatches(predicate);
   for (final reg in childReg) {
     final result = _childMatch(element, reg)!;
+    expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
+  }
+
+  // [not?(function(param1, param2))]
+  final functionReg = functionPredicate.allMatches(predicate);
+  for (final reg in functionReg) {
+    final result = _functionMatch(element, reg)!;
     expression = expression.replaceAll(reg[0]!, result ? 'true' : 'false');
   }
 
@@ -262,15 +272,21 @@ bool _singleCompare({
   final positionResult = _positionMatch(position, positionReg);
   if (positionResult != null) return positionResult;
 
-  // [@attr='gdd']
-  final attrReg = predicateAttr.firstMatch(predicate);
-  final attrResult = _attrMatch(element, attrReg);
+  // [@attr='gdd'] [function()='foo']
+  final attrReg = predicateEqual.firstMatch(predicate);
+  final attrResult = _equalMatch(element, attrReg);
   if (attrResult != null) return attrResult;
 
   // [child<10]
   final childReg = predicateChild.firstMatch(predicate);
   final childResult = _childMatch(element, childReg);
   if (childResult != null) return childResult;
+
+  // [not?(function(param1, param2))]
+  final functionReg = functionPredicate.firstMatch(predicate);
+  final functionResult = _functionMatch(element, functionReg);
+  if (functionResult != null) return functionResult;
+
   return false;
 }
 
@@ -283,14 +299,26 @@ bool? _positionMatch(int position, RegExpMatch? reg) {
   return null;
 }
 
-bool? _attrMatch(XPathNode element, RegExpMatch? reg) {
+bool? _equalMatch(XPathNode node, RegExpMatch? reg) {
   if (reg != null) {
-    final attrName = reg.namedGroup('attr')!;
+    final param1 = reg.namedGroup('function')!;
+
+    late final String param1Value;
+
+    if ((param1 == 'text()' || param1 == 'string()') && node.text != null) {
+      param1Value = node.text ?? '';
+    } else if (param1.startsWith('@')) {
+      final String? attr = node.attributes[param1.substring(1)];
+      if (attr == null) return false;
+      param1Value = attr;
+    } else {
+      throw UnsupportedError('UnSupport $param1');
+    }
+
     final op = reg.namedGroup('op')!;
     final value = reg.namedGroup('value')!;
-    final attr = element.attributes[attrName.trim()];
-    if (attr == null) return false;
-    return opString(attr, value, op);
+
+    return opString(param1Value, value, op);
   }
   return null;
 }
@@ -307,4 +335,40 @@ bool? _childMatch(XPathNode element, RegExpMatch? reg) {
     if (childValue == null) return false;
     return opCompare(childValue, num, op);
   }
+  return null;
+}
+
+bool? _functionMatch(XPathNode node, RegExpMatch? reg) {
+  if (reg != null) {
+    final notValue = reg.namedGroup('not') == 'not';
+
+    bool not(bool value) => notValue ? !value : value;
+
+    final function = reg.namedGroup('function')!.toLowerCase().trim();
+    final param1 = reg.namedGroup('param1')!.toLowerCase().trim();
+    final param2 = reg.namedGroup('param2')!.trim();
+
+    late final String param1Value;
+
+    if ((param1 == 'text()' || param1 == 'string()') && node.text != null) {
+      param1Value = node.text ?? '';
+    } else if (param1.startsWith('@')) {
+      final String? attr = node.attributes[param1.substring(1)];
+      if (attr == null) return not(false);
+      param1Value = attr;
+    } else {
+      throw UnsupportedError('UnSupport $param1');
+    }
+
+    if (function == 'contains') {
+      return not(param1Value.contains(param2));
+    } else if (function == 'starts-with') {
+      return not(param1Value.startsWith(param2));
+    } else if (function == 'ends-with') {
+      return not(param1Value.endsWith(param2));
+    } else {
+      throw UnsupportedError('UnSupport $function');
+    }
+  }
+  return null;
 }

@@ -11,3 +11,6 @@
 
 ## 1.0.3
 - Support `not(function(param1, param2))`
+
+## 1.0.4
+- Fix `child=value`

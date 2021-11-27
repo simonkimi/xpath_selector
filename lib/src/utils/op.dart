@@ -27,6 +27,8 @@ bool opCompare(int a, int b, String op) {
       return a >= b;
     case '==':
       return a == b;
+    case '=':
+      return a == b;
     case '!=':
       return a != b;
     default:

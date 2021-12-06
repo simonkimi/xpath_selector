@@ -84,6 +84,9 @@ class SelectorAxes {
     }
     return map[function]!;
   }
+
+  @override
+  String toString() => 'axes: $axis nodeTest: $nodeTest predicate: $predicate';
 }
 
 abstract class SelectorPredicate {}

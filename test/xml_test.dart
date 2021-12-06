@@ -4,7 +4,7 @@ import 'package:xml/xml.dart';
 import 'package:xpath_selector/xpath_selector.dart';
 
 final input = '''
-<bookstore>
+<bookstore xmlns:h="https://test.z31.ink" xmlns:t="https://test.z31.ink/sub">
     <book category="children">
         <title lang="en">Harry Potter</title>
         <author>J K. Rowling</author>
@@ -78,9 +78,9 @@ void main() {
   });
 
   test('combination query', () {
-    expect(xml.queryXPath('//title|//book').attrs,
+    expect(xml.queryXPath('//title|//book').elements,
         [...xml.queryAll('title'), ...xml.queryAll('book')]);
-    expect(xml.queryXPath('//title | //book').attrs,
+    expect(xml.queryXPath('//title | //book').elements,
         [...xml.queryAll('title'), ...xml.queryAll('book')]);
   });
 }

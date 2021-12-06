@@ -1,4 +1,6 @@
 abstract class XPathNode {
+  String? get name;
+
   String? get text;
 
   XPathNode? get parentNode;
@@ -9,8 +11,6 @@ abstract class XPathNode {
 }
 
 abstract class XPathElement extends XPathNode {
-  String? get name;
-
   XPathElement? get parent;
 
   List<XPathElement> get children;

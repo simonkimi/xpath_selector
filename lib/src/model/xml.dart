@@ -39,6 +39,9 @@ class XmlNodeTree implements XPathNode {
   XmlNode get node => _node;
 
   @override
+  String? get name => null;
+
+  @override
   String toString() => _node.toString();
 }
 
@@ -55,7 +58,7 @@ class XmlElementTree extends XmlNodeTree implements XPathElement {
       _element.childElements.map((child) => XmlElementTree(child)).toList();
 
   @override
-  String? get name => _element.name.local;
+  String? get name => _element.name.qualified;
 
   @override
   XPathElement? get nextElementSibling =>
@@ -82,5 +85,5 @@ class XmlElementTree extends XmlNodeTree implements XPathElement {
 
   @override
   Map<String, String> get attributes => Map.fromEntries(
-      _element.attributes.map((e) => MapEntry(e.name.local, e.value)));
+      _element.attributes.map((e) => MapEntry(e.name.qualified, e.value)));
 }

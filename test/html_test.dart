@@ -28,30 +28,6 @@ final String htmlString = '''
     </table>
 </div>
 <div class="end">end</div>
-
-<div class="comments">
-  <div class="c1">
-    <div class="c2">
-      <div class="username">uploader</div>
-      <div class="context">Hello, I'm uploader</div>
-    </div>
-  </div>
-  <div class="c1">
-    <div class="c2">
-      <div class="username">user1</div>
-      <div class="source test">+4</div>
-      <div class="context">nice work!</div>
-    </div>
-  </div>
-  <div class="c1">
-    <div class="c2">
-      <div class="username">user2</div>
-      <div class="source test">+4</div>
-      <div class="context">I like it!</div>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
 ''';
@@ -76,6 +52,9 @@ void main() {
     expect(html.queryXPath('//div/a/text()').attr, html.query('a')!.text);
     expect(html.queryXPath('//tr/node()').elements,
         html.query('tr')!.childrenNode);
+    expect(
+        html.queryXPath('//tr/td[@class^="fir" and not(text()="4")]').elements,
+        [html.query('#td1'), html.query('#td2'), html.query('#td3')]);
   });
 
   test('simple predicate', () {

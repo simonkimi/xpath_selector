@@ -301,24 +301,42 @@ bool? _positionMatch(int position, RegExpMatch? reg) {
 
 bool? _equalMatch(XPathNode node, RegExpMatch? reg) {
   if (reg != null) {
-    final param1 = reg.namedGroup('function')!;
-
-    late final String param1Value;
-
-    if ((param1 == 'text()' || param1 == 'string()') && node.text != null) {
-      param1Value = node.text ?? '';
-    } else if (param1.startsWith('@')) {
-      final String? attr = node.attributes[param1.substring(1)];
-      if (attr == null) return false;
-      param1Value = attr;
-    } else {
-      throw UnsupportedError('UnSupport $param1');
-    }
-
+    final key = reg.namedGroup('function')!.replaceAll(' ', '');
+    final rightValue = reg.namedGroup('value')!;
     final op = reg.namedGroup('op')!;
-    final value = reg.namedGroup('value')!;
+    final notValue = reg.namedGroup('not') == 'not';
+    bool not(bool value) => notValue ? !value : value;
 
-    return opString(param1Value, value, op);
+    late String leftValue;
+
+    if (key.startsWith('@')) {
+      final String? attr = node.attributes[key.substring(1)];
+      if (attr == null) return false;
+      leftValue = attr;
+    } else {
+      switch (key) {
+        case 'text()':
+        case 'string()':
+          leftValue = node.text ?? '';
+          break;
+        case 'name()':
+        case 'qualified()':
+          leftValue = node.name ?? '';
+          break;
+        case 'local-name()':
+          final name = node.name ?? '';
+          leftValue = name.contains(':') ? name.split(':').last : name;
+          break;
+        case 'namespace()':
+        case 'prefix()':
+          final name = node.name ?? '';
+          leftValue = name.contains(':') ? name.split(':').first : '';
+          break;
+        default:
+          throw ArgumentError('Unknown function: $key');
+      }
+    }
+    return not(opString(leftValue, rightValue, op));
   }
   return null;
 }

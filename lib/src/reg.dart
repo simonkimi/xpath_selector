@@ -12,7 +12,7 @@ final simpleLast = RegExp(r'last\(\s*\)\s*(?<op>\+|\-|\*|\/%\^)\s*(?<num>\d+)');
 final simpleSingleLast = RegExp(r'last\(\s*\)');
 
 final predicateEqual = RegExp(
-    r'''(?<function>[\w@\(\)]+)\s*(?<op>=|~=|\|=|\^=|\$=|\*=|!=)\s*['"](?<value>.+)['"]''');
+    r'''(?<not>(?:not)?)\s*\(?\s*(?<function>@?[\w-]+\(?\s*\)?)\s*(?<op>=|~=|\|=|\^=|\$=|\*=|!=)\s*['"](?<value>\w+)['"]\)?''');
 final functionNodeTest = RegExp(r'^(?<function>\w+)\(\s*\)$');
 
 final functionPredicate = RegExp(

@@ -14,3 +14,7 @@
 
 ## 1.0.4
 - Fix `child=value`
+
+## 1.1.0
+- Support `not(funcion()|attr = """)`
+- Support namespace function: `local-name()` `name()`

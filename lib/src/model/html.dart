@@ -39,6 +39,9 @@ class HtmlNodeTree implements XPathNode {
   int get hashCode => _node.hashCode;
 
   Node get node => _node;
+
+  @override
+  String? get name => null;
 }
 
 class HtmlElementTree extends HtmlNodeTree implements XPathElement {

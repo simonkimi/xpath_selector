@@ -35,7 +35,6 @@ final result6 = xmlRoot.queryXPath('//child');
 print(result1.nodes);
 
 // Get the first node of query results
-
 print(result1.node);
 
 // Get all properties of query results
@@ -53,8 +52,8 @@ More examples can be referred to [Xml](https://github.com/simonkimi/xpath_select
 This package uses [html](https://pub.flutter-io.cn/packages/html) and [xml](https://pub.flutter-io.cn/packages/xml) as the default parsing package
 
 
-If you want to use another parsing package(such as[universal_html](https://pub.flutter-io.cn/packages/universal_html)),
-Please refer to [`HtmlNodeTree`](https://github.com/simonkimi/xpath_selector/blob/master/lib/src/model/html.dart) Create your own model.
+If you want to use another parsing package (such as [universal_html](https://pub.flutter-io.cn/packages/universal_html)),
+Please refer to [`HtmlNodeTree`](https://github.com/simonkimi/xpath_selector/blob/master/lib/src/model/html.dart) create your own model.
 
 ## Extended syntax
 

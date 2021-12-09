@@ -1,6 +1,8 @@
 import 'base.dart';
 import 'package:html/dom.dart';
 
+
+/// Built-in html model.
 class HtmlNodeTree implements XPathNode {
   HtmlNodeTree(this._node);
 

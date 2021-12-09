@@ -1,4 +1,5 @@
 import 'package:expressions/expressions.dart';
+import 'package:xpath_selector/src/parser.dart';
 import 'package:xpath_selector/src/utils/dom_selector.dart';
 import 'package:xpath_selector/src/selector.dart';
 import 'package:xpath_selector/src/utils/utils.dart';
@@ -170,7 +171,6 @@ bool _matchPredicates({
     );
   } else {
     // 单计算
-
     // Position
     if (predicateLast.hasMatch(predicate) || predicateInt.hasMatch(predicate)) {
       return _singlePosition(
@@ -306,36 +306,8 @@ bool? _equalMatch(XPathNode node, RegExpMatch? reg) {
     final op = reg.namedGroup('op')!;
     final notValue = reg.namedGroup('not') == 'not';
     bool not(bool value) => notValue ? !value : value;
-
-    late String leftValue;
-
-    if (key.startsWith('@')) {
-      final String? attr = node.attributes[key.substring(1)];
-      if (attr == null) return false;
-      leftValue = attr;
-    } else {
-      switch (key) {
-        case 'text()':
-        case 'string()':
-          leftValue = node.text ?? '';
-          break;
-        case 'name()':
-        case 'qualified()':
-          leftValue = node.name ?? '';
-          break;
-        case 'local-name()':
-          final name = node.name ?? '';
-          leftValue = name.contains(':') ? name.split(':').last : name;
-          break;
-        case 'namespace()':
-        case 'prefix()':
-          final name = node.name ?? '';
-          leftValue = name.contains(':') ? name.split(':').first : '';
-          break;
-        default:
-          throw ArgumentError('Unknown function: $key');
-      }
-    }
+    final leftValue = elementFunction(node: node, function: key);
+    if (leftValue == null) return false;
     return not(opString(leftValue, rightValue, op));
   }
   return null;

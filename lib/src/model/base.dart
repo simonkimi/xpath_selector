@@ -1,3 +1,5 @@
+
+/// If you want to create your own model, please extend this class.
 abstract class XPathNode {
   String? get name;
 
@@ -10,6 +12,7 @@ abstract class XPathNode {
   Map<String, String> get attributes;
 }
 
+/// If you want to create your own model, please extend this class.
 abstract class XPathElement extends XPathNode {
   XPathElement? get parent;
 

@@ -1,7 +1,5 @@
 enum SelectorType { descendant, self }
 
-enum SelectorFunction { text, node }
-
 class SelectorGroup {
   final List<Selector> selectors;
   final String source;
@@ -21,7 +19,7 @@ class Selector {
   final SelectorType selectorType;
   final SelectorAxes axes;
   final String? attr;
-  final SelectorFunction? function;
+  final String? function;
 
   @override
   String toString() =>
@@ -72,17 +70,6 @@ class SelectorAxes {
       throw FormatException('not support axis: $axis');
     }
     return map[axis]!;
-  }
-
-  static SelectorFunction createFunction(String function) {
-    final map = {
-      'text()': SelectorFunction.text,
-      'node()': SelectorFunction.node,
-    };
-    if (!map.containsKey(function)) {
-      throw FormatException('not support axis: $function');
-    }
-    return map[function]!;
   }
 
   @override

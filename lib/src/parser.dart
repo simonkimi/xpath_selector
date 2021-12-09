@@ -4,6 +4,7 @@ import 'package:xpath_selector/src/selector.dart';
 import 'model/base.dart';
 import 'reg.dart';
 
+/// parse xpath selector
 List<List<Selector>> parseSelectGroup(String xpath) {
   final combine = xpath.split('|');
   final selectorList = <List<Selector>>[];
@@ -121,18 +122,6 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
         ));
   }
 
-  // text()
-  if (source == 'text()') {
-    return Selector(
-      selectorType: selectorType,
-      function: SelectorFunction.text,
-      axes: SelectorAxes(
-        nodeTest: '*',
-        axis: AxesAxis.self,
-      ),
-    );
-  }
-
   // node()
   if (source == 'node()') {
     return Selector(
@@ -143,32 +132,76 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
       ),
     );
   }
+
+  // text()
+  final function = RegExp(r'^\w*\(\s*\)$').firstMatch(source);
+  if (function != null) {
+    return Selector(
+      selectorType: selectorType,
+      function: function.group(0),
+      axes: SelectorAxes(
+        nodeTest: '*',
+        axis: AxesAxis.self,
+      ),
+    );
+  }
 }
 
+/// if last selector is @attr or function, add to result
 List<String?> parseAttr({
   required List<Selector> selectorList,
   required List<XPathNode> elements,
 }) {
   final result = <String?>[];
+
   if (selectorList.isNotEmpty) {
-    final last = selectorList.last;
+    final lastSelector = selectorList.last;
     for (final element in elements) {
-      if (last.attr != null) {
-        if (last.attr == '*') {
+      if (lastSelector.attr != null) {
+        // @attr
+        if (lastSelector.attr == '*') {
           result.addAll(element.attributes.values);
         } else {
-          result.add(element.attributes[last.attr]);
+          result.add(element.attributes[lastSelector.attr]);
         }
-      } else if (last.function == SelectorFunction.text) {
-        result.add(element.text);
-      } else if (last.axes.axis == AxesAxis.attribute) {
-        if (last.axes.nodeTest == '*') {
+      } else if (lastSelector.function != null) {
+        // function
+        result.add(
+            elementFunction(node: element, function: lastSelector.function!));
+      } else if (lastSelector.axes.axis == AxesAxis.attribute) {
+        // attr
+        if (lastSelector.axes.nodeTest == '*') {
           result.addAll(element.attributes.values);
         } else {
-          result.add(element.attributes[last.axes.nodeTest]);
+          result.add(element.attributes[lastSelector.axes.nodeTest]);
         }
       }
     }
   }
   return result;
+}
+
+/// if node-test is text() or other functions
+String? elementFunction({required XPathNode node, required String function}) {
+  if (function.startsWith('@')) {
+    return node.attributes[function.substring(1)];
+  } else {
+    switch (function) {
+      case 'text()':
+      case 'string()':
+        return node.text ?? '';
+      case 'name()':
+      case 'qualified()':
+        return node.name ?? '';
+      case 'local-name()':
+        final name = node.name ?? '';
+        return name.contains(':') ? name.split(':').last : name;
+      case 'namespace()':
+      case 'prefix()':
+        final name = node.name ?? '';
+        return name.contains(':') ? name.split(':').first : '';
+      default:
+        throw ArgumentError('Unknown function: $function');
+    }
+  }
 }

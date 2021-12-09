@@ -1,86 +1,50 @@
 import 'base.dart';
 import 'package:html/dom.dart';
 
-
 /// Built-in html model.
-class HtmlNodeTree implements XPathNode {
-  HtmlNodeTree(this._node);
+class HtmlNodeTree extends XPathNode<Node> {
+  HtmlNodeTree(Node node) : super(node);
 
-  static HtmlNodeTree? buildNullNode(Node? node) => node == null
-      ? null
-      : node is Element
-          ? HtmlElementTree(node)
-          : HtmlNodeTree(node);
-
-  static HtmlNodeTree buildNode(Node node) =>
-      node is Element ? HtmlElementTree(node) : HtmlNodeTree(node);
-
-  final Node _node;
+  static HtmlNodeTree? from(Node? node) {
+    if (node == null) return null;
+    return HtmlNodeTree(node);
+  }
 
   @override
-  HtmlNodeTree? get parentNode => buildNullNode(_node.parentNode);
+  bool get isElement => node is Element;
 
   @override
-  List<HtmlNodeTree> get childrenNode => _node.nodes.map(buildNode).toList();
+  HtmlNodeTree? get parent => from(node.parentNode);
+
+  @override
+  List<HtmlNodeTree> get children =>
+      node.children.map((e) => HtmlNodeTree(e)).toList();
+
+  @override
+  HtmlNodeTree? get nextSibling =>
+      isElement ? from((node as Element).nextElementSibling) : null;
+
+  @override
+  HtmlNodeTree? get previousSibling =>
+      isElement ? from((node as Element).previousElementSibling) : null;
 
   @override
   Map<String, String> get attributes =>
-      _node.attributes.map((key, value) => MapEntry(key.toString(), value));
+      node.attributes.map((key, value) => MapEntry(key.toString(), value));
 
   @override
-  String? get text => _node.text;
+  String? get text => node.text;
 
   @override
-  String toString() => _node.toString();
-
-  @override
-  bool operator ==(Object other) =>
-      other is HtmlNodeTree ? other._node == _node : false;
-
-  @override
-  int get hashCode => _node.hashCode;
-
-  Node get node => _node;
-
-  @override
-  String? get name => null;
-}
-
-class HtmlElementTree extends HtmlNodeTree implements XPathElement {
-  HtmlElementTree(this._element) : super(_element);
-
-  HtmlElementTree? buildElement(Element? element) =>
-      element != null ? HtmlElementTree(element) : null;
-
-  final Element _element;
-
-  @override
-  XPathElement? get nextElementSibling =>
-      buildElement(_element.nextElementSibling);
-
-  @override
-  XPathElement? get previousElementSibling =>
-      buildElement(_element.previousElementSibling);
-
-  @override
-  String? get name => _element.localName;
-
-  @override
-  List<XPathElement> get children =>
-      _element.children.map((e) => HtmlElementTree(e)).toList();
-
-  @override
-  XPathElement? get parent => buildElement(_element.parent);
-
-  @override
-  String toString() => _element.toString();
+  String toString() => node.toString();
 
   @override
   bool operator ==(Object other) =>
-      other is HtmlElementTree ? other._element == _element : false;
+      other is HtmlNodeTree ? other.node == node : false;
 
   @override
-  int get hashCode => _element.hashCode;
+  int get hashCode => node.hashCode;
 
-  Element get element => _element;
+  @override
+  String? get name => isElement ? (node as Element).localName : null;
 }

@@ -36,66 +36,60 @@ final html = parse(htmlString).documentElement!;
 
 extension TestTransfer on Element {
   XPathNode? query(String selector) =>
-      HtmlNodeTree.buildNullNode(querySelector(selector));
+      HtmlNodeTree.from(querySelector(selector));
 
   List<XPathNode> queryAll(String selector) =>
-      querySelectorAll(selector).map((e) => HtmlNodeTree.buildNode(e)).toList();
+      querySelectorAll(selector).map((e) => HtmlNodeTree(e)).toList();
 }
 
 void main() {
   test('basic', () {
-    expect(html.queryXPath('//div/a').element, html.query('a'));
+    expect(html.queryXPath('//div/a').node, html.query('a'));
     expect(html.queryXPath('//div/a/@href').attr,
         html.query('a')!.attributes['href']);
     expect(html.queryXPath('//td[@id="td1"]/@*').attrs,
         html.query('#td1')!.attributes.values);
     expect(html.queryXPath('//div/a/text()').attr, html.query('a')!.text);
-    expect(html.queryXPath('//tr/node()').elements,
-        html.query('tr')!.childrenNode);
-    expect(
-        html.queryXPath('//tr/td[@class^="fir" and not(text()="4")]').elements,
+    expect(html.queryXPath('//tr/node()').nodes, html.query('tr')!.children);
+    expect(html.queryXPath('//tr/td[@class^="fir" and not(text()="4")]').nodes,
         [html.query('#td1'), html.query('#td2'), html.query('#td3')]);
   });
 
   test('simple predicate', () {
-    expect(html.queryXPath('//tr/td[1]').element, html.query('#td1'));
-    expect(html.queryXPath('//tr/td[last()]').element, html.query('#td8'));
-    expect(html.queryXPath('//tr/td[last()-1]').element, html.query('#td7'));
-    expect(html.queryXPath('//tr/td[position()<3]').elements,
+    expect(html.queryXPath('//tr/td[1]').node, html.query('#td1'));
+    expect(html.queryXPath('//tr/td[last()]').node, html.query('#td8'));
+    expect(html.queryXPath('//tr/td[last()-1]').node, html.query('#td7'));
+    expect(html.queryXPath('//tr/td[position()<3]').nodes,
         [html.query('#td1'), html.query('#td2')]);
-    expect(html.queryXPath('//tr/td[position() < 3]').elements,
+    expect(html.queryXPath('//tr/td[position() < 3]').nodes,
         [html.query('#td1'), html.query('#td2')]);
   });
 
   test('complex predicate', () {
     expect(
-        html
-            .queryXPath('//tr/td[position() >= 2 and @class="second1"]')
-            .elements,
+        html.queryXPath('//tr/td[position() >= 2 and @class="second1"]').nodes,
         [html.query('#td5'), html.query('#td6')]);
-    expect(
-        html.queryXPath('//tr/td[position() >= 2 and position() < 4]').elements,
+    expect(html.queryXPath('//tr/td[position() >= 2 and position() < 4]').nodes,
         [html.query('#td2'), html.query('#td3')]);
-    expect(
-        html.queryXPath('//tr/td[position() <= 1 or position() >= 8]').elements,
+    expect(html.queryXPath('//tr/td[position() <= 1 or position() >= 8]').nodes,
         [html.query('#td1'), html.query('#td8')]);
   });
 
   test('extend predicate', () {
-    expect(html.queryXPath('//tr/td[@class="first1"]').elements,
+    expect(html.queryXPath('//tr/td[@class="first1"]').nodes,
         html.queryAll('td[class="first1"]'));
-    expect(html.queryXPath('//tr/td[@class^="fir"]').elements,
+    expect(html.queryXPath('//tr/td[@class^="fir"]').nodes,
         html.queryAll('td[class^="fir"]'));
-    expect(html.queryXPath('//tr/td[@class~="form"]').elements,
+    expect(html.queryXPath('//tr/td[@class~="form"]').nodes,
         html.queryAll('td[class~="form"]'));
-    expect(html.queryXPath(r'//tr/td[@class$="1"]').elements,
+    expect(html.queryXPath(r'//tr/td[@class$="1"]').nodes,
         html.queryAll(r'td[class$="1"]'));
   });
 
   test('combination query', () {
-    expect(html.queryXPath('//div/a|//div[@class="head"]').elements,
+    expect(html.queryXPath('//div/a|//div[@class="head"]').nodes,
         [html.query('a'), html.query('.head')]);
-    expect(html.queryXPath('//div/a | //div[@class="head"]').elements,
+    expect(html.queryXPath('//div/a | //div[@class="head"]').nodes,
         [html.query('a'), html.query('.head')]);
   });
 
@@ -104,33 +98,33 @@ void main() {
         html.query('#td1')!.attributes['class']);
     expect(html.queryXPath('//td[@id="td1"]/attribute::*').attrs,
         html.query('#td1')!.attributes.values);
-    expect(html.queryXPath('//td/parent::*').element, html.query('tr'));
-    expect(html.queryXPath('//tr/child::*').elements, html.queryAll('td'));
-    expect(html.queryXPath('//td/ancestor::*').elements,
-        ancestor(html.query('td')));
-    expect(html.queryXPath('//tr/ancestor-or-self::*').elements,
+    expect(html.queryXPath('//td/parent::*').node, html.query('tr'));
+    expect(html.queryXPath('//tr/child::*').nodes, html.queryAll('td'));
+    expect(
+        html.queryXPath('//td/ancestor::*').nodes, ancestor(html.query('td')));
+    expect(html.queryXPath('//tr/ancestor-or-self::*').nodes,
         ancestorOrSelf(html.query('tr')));
-    expect(html.queryXPath('//table/descendant::td').elements,
-        html.queryAll('td'));
-    expect(html.queryXPath('//table//tbody/descendant-or-self::*').elements,
+    expect(
+        html.queryXPath('//table/descendant::td').nodes, html.queryAll('td'));
+    expect(html.queryXPath('//table//tbody/descendant-or-self::*').nodes,
         [html.query('tbody'), html.query('tr'), ...html.queryAll('td')]);
   });
 
   test('function', () {
-    expect(html.queryXPath('//td[contains(@class, "first")]').elements,
+    expect(html.queryXPath('//td[contains(@class, "first")]').nodes,
         html.queryAll('td[class^="first"]'));
-    expect(html.queryXPath('//td[not(contains(@class, "first"))]').elements,
+    expect(html.queryXPath('//td[not(contains(@class, "first"))]').nodes,
         html.queryAll('td[class^="second"]'));
-    expect(html.queryXPath('//td[contains(text(), "one")]').elements,
+    expect(html.queryXPath('//td[contains(text(), "one")]').nodes,
         html.queryAll('#td5'));
-    expect(html.queryXPath('//td[starts-with(text(), "o")]').elements,
+    expect(html.queryXPath('//td[starts-with(text(), "o")]').nodes,
         html.queryAll('#td5'));
-    expect(html.queryXPath('//td[ends-with(text(), "e")]').elements,
+    expect(html.queryXPath('//td[ends-with(text(), "e")]').nodes,
         [html.query('#td5'), html.query('#td7')]);
     expect(
         html
             .queryXPath('//td[contains(@class, "first") and text() = "3"]')
-            .elements,
+            .nodes,
         html.queryAll('#td3'));
   });
 }

@@ -33,22 +33,22 @@ void main() {
   // You can create xpath selector by html
   final xpath = XPath.html(htmlString);
 
-  print(xpath.query('//td[1]').elements);
+  print(xpath.query('//td[1]').nodes);
 
-  print(xpath.query('//div/a').elements);
+  print(xpath.query('//div/a').nodes);
 
   // Or by html dom
   final htmlDom = parse(htmlString).documentElement!;
   final xpathFrom = XPath.htmlElement(htmlDom);
-  print(xpathFrom.query('//div/a').elements);
+  print(xpathFrom.query('//div/a').nodes);
 
   // Or by element
-  print(htmlDom.queryXPath(r'//div/a').elements);
+  print(htmlDom.queryXPath(r'//div/a').nodes);
 
   print('-' * 10 + 'example' + '-' * 10);
 
   print('\n//div/a');
-  print(htmlDom.queryXPath(r'//div/a').element);
+  print(htmlDom.queryXPath(r'//div/a').node);
 
   print('\n//div/a/@href');
   print(htmlDom.queryXPath(r'//div/a/@href').attr);
@@ -57,7 +57,7 @@ void main() {
   print(htmlDom.queryXPath(r'//div/a/text()').attr);
 
   print('\n//tr/node()');
-  print(htmlDom.queryXPath(r'//tr/node()').elements);
+  print(htmlDom.queryXPath(r'//tr/node()').nodes);
 
   print('\n//td[1]/text()');
   print(htmlDom.queryXPath(r'//td[1]/text()').attrs);

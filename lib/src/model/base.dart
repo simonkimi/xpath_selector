@@ -1,24 +1,28 @@
-
 /// If you want to create your own model, please extend this class.
-abstract class XPathNode {
+abstract class XPathNode<T> {
+  XPathNode(this.node);
+
+  T node;
+
   String? get name;
 
   String? get text;
 
-  XPathNode? get parentNode;
+  XPathNode<T>? get parent;
 
-  List<XPathNode> get childrenNode;
+  List<XPathNode<T>> get children;
 
   Map<String, String> get attributes;
-}
 
-/// If you want to create your own model, please extend this class.
-abstract class XPathElement extends XPathNode {
-  XPathElement? get parent;
+  XPathNode<T>? get nextSibling;
 
-  List<XPathElement> get children;
+  XPathNode<T>? get previousSibling;
 
-  XPathElement? get nextElementSibling;
+  bool get isElement;
 
-  XPathElement? get previousElementSibling;
+  @override
+  bool operator ==(Object other);
+
+  @override
+  int get hashCode;
 }

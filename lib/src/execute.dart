@@ -7,19 +7,19 @@ import 'model/base.dart';
 import 'reg.dart';
 import 'utils/op.dart';
 
-List<XPathNode> execute({
+List<XPathNode<T>> execute<T>({
   required List<Selector> selectorList,
-  required XPathNode element,
+  required XPathNode<T> element,
 }) {
-  var tmp = <XPathNode>[element];
+  var tmp = <XPathNode<T>>[element];
 
   for (final selector in selectorList) {
-    final rootMatch = <XPathNode>[];
+    final rootMatch = <XPathNode<T>>[];
     for (final element in tmp) {
-      final pathXPathNode = _matchSelectPath(selector, element);
-      final selectorMatch = <XPathNode>[];
+      final pathXPathNode = _matchSelectPath<T>(selector, element);
+      final selectorMatch = <XPathNode<T>>[];
       for (final element in pathXPathNode) {
-        final axisXPathNode = _matchAxis(selector, element);
+        final axisXPathNode = _matchAxis<T>(selector, element);
         final removeIndex = [];
 
         // _matchSelector
@@ -63,11 +63,11 @@ List<XPathNode> execute({
 }
 
 /// Get element by path
-List<XPathNode> _matchSelectPath(Selector selector, XPathNode node) {
-  final waitingSelect = <XPathNode>[];
+List<XPathNode<T>> _matchSelectPath<T>(Selector selector, XPathNode<T> node) {
+  final waitingSelect = <XPathNode<T>>[];
   switch (selector.selectorType) {
     case SelectorType.descendant:
-      waitingSelect.addAllIfNotExist(descentOrSelf(node));
+      waitingSelect.addAllIfNotExist(descentOrSelf<T>(node));
       break;
     case SelectorType.self:
       waitingSelect.addIfNotExist(node);
@@ -77,12 +77,12 @@ List<XPathNode> _matchSelectPath(Selector selector, XPathNode node) {
 }
 
 /// Get element by Axis
-List<XPathNode> _matchAxis(Selector selector, XPathNode node) {
-  final waitingSelect = <XPathNode>[];
+List<XPathNode<T>> _matchAxis<T>(Selector selector, XPathNode<T> node) {
+  final waitingSelect = <XPathNode<T>>[];
   switch (selector.axes.axis) {
     case AxesAxis.child:
     case null:
-      waitingSelect.addAllIfNotExist(node.childrenNode);
+      waitingSelect.addAllIfNotExist(node.children);
       break;
     case AxesAxis.ancestor:
       waitingSelect.addAllIfNotExist(ancestor(node));
@@ -100,17 +100,13 @@ List<XPathNode> _matchAxis(Selector selector, XPathNode node) {
       waitingSelect.addAllIfNotExist(following(top(node) ?? node, node));
       break;
     case AxesAxis.parent:
-      if (node.parentNode != null) waitingSelect.add(node.parentNode!);
+      if (node.parent != null) waitingSelect.add(node.parent!);
       break;
     case AxesAxis.followingSibling:
-      if (node is XPathElement) {
-        waitingSelect.addAllIfNotExist(followingSibling(node));
-      }
+      waitingSelect.addAllIfNotExist(followingSibling(node));
       break;
     case AxesAxis.precedingSibling:
-      if (node is XPathElement) {
-        waitingSelect.addAllIfNotExist(precedingSibling(node));
-      }
+      waitingSelect.addAllIfNotExist(precedingSibling(node));
       break;
     case AxesAxis.attribute:
     case AxesAxis.self:
@@ -134,7 +130,7 @@ bool _matchSelector({
   final nodeTest = selector.axes.nodeTest;
 
   if (nodeTest != 'node()') {
-    if (element is! XPathElement) {
+    if (!element.isElement) {
       return false;
     }
 
@@ -318,8 +314,8 @@ bool? _childMatch(XPathNode element, RegExpMatch? reg) {
     final childName = reg.namedGroup('child');
     final op = reg.namedGroup('op')!;
     final num = int.tryParse(reg.namedGroup('num')!) ?? 0;
-    final int? childValue = element.childrenNode
-        .where((e) => e is XPathElement && e.name == childName)
+    final int? childValue = element.children
+        .where((e) => e.isElement && e.name == childName)
         .map((e) => int.tryParse(e.text ?? ''))
         .firstWhere((e) => e != null, orElse: () => null);
     if (childValue == null) return false;

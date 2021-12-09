@@ -42,45 +42,43 @@ extension XmlTransfer on XmlElement {
   XPathNode? query(String selector) {
     final result = findAllElements(selector).toList();
     if (result.isEmpty) return null;
-    return XmlNodeTree.buildNode(result.first);
+    return XmlNodeTree.from(result.first);
   }
 
   List<XPathNode> queryAll(String selector,
       [bool Function(XmlNode element)? filter]) {
     var result = findAllElements(selector);
     if (filter != null) result = result.where(filter);
-    return result.map((e) => XmlNodeTree.buildNode(e)).toList();
+    return result.map((e) => XmlNodeTree(e)).toList();
   }
 }
 
 void main() {
   test('basic', () {
-    expect(xml.queryXPath('//book').elements, xml.queryAll('book'));
-    expect(xml.queryXPath('//book/title').elements, xml.queryAll('title'));
-    expect(xml.queryXPath('//*[@lang="en"]').elements, xml.queryAll('title'));
-    expect(
-        xml.queryXPath('//title[@lang="en"]').elements, xml.queryAll('title'));
+    expect(xml.queryXPath('//book').nodes, xml.queryAll('book'));
+    expect(xml.queryXPath('//book/title').nodes, xml.queryAll('title'));
+    expect(xml.queryXPath('//*[@lang="en"]').nodes, xml.queryAll('title'));
+    expect(xml.queryXPath('//title[@lang="en"]').nodes, xml.queryAll('title'));
   });
 
   test('index', () {
-    expect(xml.queryXPath('//book[1]').element, xml.queryAll('book')[0]);
-    expect(xml.queryXPath('//book[last()]').element, xml.queryAll('book').last);
-    expect(
-        xml.queryXPath('//book[last() - 1]').element, xml.queryAll('book')[2]);
+    expect(xml.queryXPath('//book[1]').node, xml.queryAll('book')[0]);
+    expect(xml.queryXPath('//book[last()]').node, xml.queryAll('book').last);
+    expect(xml.queryXPath('//book[last() - 1]').node, xml.queryAll('book')[2]);
   });
 
   test('attr', () {
     expect(xml.queryXPath('//title/@lang').attrs, List.filled(4, 'en'));
     expect(xml.queryXPath('//title/text()').attrs,
         xml.queryAll('title').map((e) => e.text));
-    expect(xml.queryXPath('//book[1]/node()').elements,
-        xml.queryAll('book')[0].childrenNode);
+    expect(xml.queryXPath('//book[1]/node()').nodes,
+        xml.queryAll('book')[0].children);
   });
 
   test('combination query', () {
-    expect(xml.queryXPath('//title|//book').elements,
+    expect(xml.queryXPath('//title|//book').nodes,
         [...xml.queryAll('title'), ...xml.queryAll('book')]);
-    expect(xml.queryXPath('//title | //book').elements,
+    expect(xml.queryXPath('//title | //book').nodes,
         [...xml.queryAll('title'), ...xml.queryAll('book')]);
   });
 }

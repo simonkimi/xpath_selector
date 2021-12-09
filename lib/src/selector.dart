@@ -75,9 +75,3 @@ class SelectorAxes {
   @override
   String toString() => 'axes: $axis nodeTest: $nodeTest predicate: $predicate';
 }
-
-abstract class SelectorPredicate {}
-
-class IndexPredicate extends SelectorPredicate {}
-
-class ExpressionPredicate extends SelectorPredicate {}

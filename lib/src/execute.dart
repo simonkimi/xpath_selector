@@ -329,9 +329,7 @@ bool? _functionMatch(XPathNode node, RegExpMatch? reg) {
     final param1 = reg.namedGroup('param1')!.toLowerCase().trim();
     final param2 = reg.namedGroup('param2')!;
     final leftValue = elementFunction(node: node, function: param1);
-    if (leftValue == null) {
-      throw UnsupportedError('Unsupported function: $param1');
-    }
+    if (leftValue == null) return false;
     if (function == 'contains') {
       return not(leftValue.contains(param2));
     } else if (function == 'starts-with') {

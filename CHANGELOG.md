@@ -23,3 +23,6 @@
 1. Custom parser
 2. Remove class`XPathElement`, which merge to`XPathNode`
 3. In `XPathResult`, `elements`=>`nodes`, `elements`=>`element`
+
+## 2.0.1
+- Support more leftValue on `not(function(leftValue, param2))`

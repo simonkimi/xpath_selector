@@ -130,13 +130,8 @@ bool _matchSelector({
   final nodeTest = selector.axes.nodeTest;
 
   if (nodeTest != 'node()') {
-    if (!element.isElement) {
-      return false;
-    }
-
-    if (nodeTest != '*' && element.name != nodeTest) {
-      return false;
-    }
+    if (!element.isElement) return false;
+    if (nodeTest != '*' && element.name != nodeTest) return false;
   }
   return true;
 }
@@ -211,7 +206,8 @@ bool _singlePosition({
     final num = int.tryParse(indexReg.namedGroup('num')!) ?? 0;
     return num == position + 1;
   }
-  return false;
+
+  throw UnsupportedError('Unsupported predicate: $predicate');
 }
 
 bool _multipleCompare({
@@ -254,7 +250,8 @@ bool _multipleCompare({
   final evaluator = const ExpressionEvaluator();
   final result = evaluator.eval(eval, {});
   if (result is bool) return result;
-  return false;
+  throw FormatException(
+      'Expression parse error, raw: $predicate, replaced: $predicate');
 }
 
 bool _singleCompare({
@@ -283,7 +280,7 @@ bool _singleCompare({
   final functionResult = _functionMatch(element, functionReg);
   if (functionResult != null) return functionResult;
 
-  return false;
+  throw UnsupportedError('Unsupported predicate: $predicate');
 }
 
 bool? _positionMatch(int position, RegExpMatch? reg) {
@@ -327,31 +324,20 @@ bool? _childMatch(XPathNode element, RegExpMatch? reg) {
 bool? _functionMatch(XPathNode node, RegExpMatch? reg) {
   if (reg != null) {
     final notValue = reg.namedGroup('not') == 'not';
-
     bool not(bool value) => notValue ? !value : value;
-
     final function = reg.namedGroup('function')!.toLowerCase().trim();
     final param1 = reg.namedGroup('param1')!.toLowerCase().trim();
-    final param2 = reg.namedGroup('param2')!.trim();
-
-    late final String param1Value;
-
-    if ((param1 == 'text()' || param1 == 'string()') && node.text != null) {
-      param1Value = node.text ?? '';
-    } else if (param1.startsWith('@')) {
-      final String? attr = node.attributes[param1.substring(1)];
-      if (attr == null) return not(false);
-      param1Value = attr;
-    } else {
-      throw UnsupportedError('UnSupport $param1');
+    final param2 = reg.namedGroup('param2')!;
+    final leftValue = elementFunction(node: node, function: param1);
+    if (leftValue == null) {
+      throw UnsupportedError('Unsupported function: $param1');
     }
-
     if (function == 'contains') {
-      return not(param1Value.contains(param2));
+      return not(leftValue.contains(param2));
     } else if (function == 'starts-with') {
-      return not(param1Value.startsWith(param2));
+      return not(leftValue.startsWith(param2));
     } else if (function == 'ends-with') {
-      return not(param1Value.endsWith(param2));
+      return not(leftValue.endsWith(param2));
     } else {
       throw UnsupportedError('UnSupport $function');
     }

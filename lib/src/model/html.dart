@@ -46,5 +46,6 @@ class HtmlNodeTree extends XPathNode<Node> {
   int get hashCode => node.hashCode;
 
   @override
-  String? get name => isElement ? (node as Element).localName : null;
+  NodeTagName? get name =>
+      isElement ? NodeTagName(localName: (node as Element).localName) : null;
 }

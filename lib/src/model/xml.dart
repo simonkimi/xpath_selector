@@ -35,7 +35,8 @@ class XmlNodeTree extends XPathNode<XmlNode> {
   int get hashCode => node.hashCode;
 
   @override
-  String? get name => isElement ? (node as XmlElement).name.qualified : null;
+  NodeTagName? get name =>
+      isElement ? NodeTagName.from((node as XmlElement).name.qualified) : null;
 
   @override
   String toString() => node.toString();

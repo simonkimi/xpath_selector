@@ -131,7 +131,7 @@ bool _matchSelector({
 
   if (nodeTest != 'node()') {
     if (!element.isElement) return false;
-    if (nodeTest != '*' && element.name != nodeTest) return false;
+    if (nodeTest != '*' && element.name?.qualified != nodeTest) return false;
   }
   return true;
 }
@@ -312,7 +312,7 @@ bool? _childMatch(XPathNode element, RegExpMatch? reg) {
     final op = reg.namedGroup('op')!;
     final num = int.tryParse(reg.namedGroup('num')!) ?? 0;
     final int? childValue = element.children
-        .where((e) => e.isElement && e.name == childName)
+        .where((e) => e.isElement && e.name?.qualified == childName)
         .map((e) => int.tryParse(e.text ?? ''))
         .firstWhere((e) => e != null, orElse: () => null);
     if (childValue == null) return false;

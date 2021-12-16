@@ -192,14 +192,12 @@ String? elementFunction({required XPathNode node, required String function}) {
         return node.text ?? '';
       case 'name()':
       case 'qualified()':
-        return node.name ?? '';
+        return node.name?.qualified;
       case 'local-name()':
-        final name = node.name ?? '';
-        return name.contains(':') ? name.split(':').last : name;
+        return node.name?.localName;
       case 'namespace()':
       case 'prefix()':
-        final name = node.name ?? '';
-        return name.contains(':') ? name.split(':').first : '';
+        return node.name?.namespace;
       default:
         throw ArgumentError('Unknown function: $function');
     }

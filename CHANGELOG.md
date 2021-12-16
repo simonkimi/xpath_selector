@@ -26,3 +26,6 @@
 
 ## 2.0.1
 - Support more leftValue on `not(function(leftValue, param2))`
+
+## 2.1.0
+- Add query to node

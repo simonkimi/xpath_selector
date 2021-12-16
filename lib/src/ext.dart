@@ -1,8 +1,8 @@
 import 'package:html/dom.dart';
 import 'package:xml/xml.dart';
-import 'builder.dart';
+import '../xpath_selector.dart';
 
-extension ElementHelper on Element {
+extension HtmlElementHelper on Element {
   /// Html XPath query
   XPathResult<Node> queryXPath(String xpath) =>
       XPath.htmlElement(this).query(xpath);

@@ -23,7 +23,7 @@ class Selector {
 
   @override
   String toString() =>
-      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${function ?? axes.nodeTest}${axes.predicate != null ? '[${axes.predicate}]' : ''}';
+      '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${function ?? axes.nodeTest}${axes.predicate.isNotEmpty ? axes.predicate.map((e) => '[$e]').join() : ''}';
 }
 
 // 轴

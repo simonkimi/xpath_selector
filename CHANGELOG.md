@@ -40,3 +40,7 @@
 ## 2.2.0
 
 - Support multi predicate, now you can use `//tag[predicate][predicate2][predicate3]`
+
+## 2.2.1
+
+- Bug fix

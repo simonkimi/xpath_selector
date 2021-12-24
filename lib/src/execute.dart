@@ -39,18 +39,23 @@ List<XPathNode<T>> execute<T>({
         removeIndex.clear();
 
         // matchPredicates
-        for (var i = 0; i < axisXPathNode.length; i++) {
-          final element = axisXPathNode[i];
-          if (!_matchPredicates(
+        for (final predicate in selector.axes.predicate) {
+          for (var i = 0; i < axisXPathNode.length; i++) {
+            final element = axisXPathNode[i];
+            if (!_matchPredicates(
               selector: selector,
               element: element,
               position: i,
-              length: axisXPathNode.length)) {
-            removeIndex.add(i);
+              length: axisXPathNode.length,
+              predicate: predicate,
+            )) {
+              removeIndex.add(i);
+            }
           }
-        }
-        for (final index in removeIndex.reversed) {
-          axisXPathNode.removeAt(index);
+          for (final index in removeIndex.reversed) {
+            axisXPathNode.removeAt(index);
+          }
+          removeIndex.clear();
         }
 
         selectorMatch.addAllIfNotExist(axisXPathNode);
@@ -142,9 +147,8 @@ bool _matchPredicates({
   required XPathNode element,
   required int position,
   required int length,
+  required String predicate,
 }) {
-  if (selector.axes.predicate == null) return true;
-  var predicate = selector.axes.predicate!;
   predicate = predicate.replaceAll(' and ', ' && ');
   predicate = predicate.replaceAll(' or ', ' || ');
   predicate = predicate.replaceAll(' div ', ' / ');

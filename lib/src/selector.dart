@@ -45,12 +45,12 @@ class SelectorAxes {
   SelectorAxes({
     required this.axis,
     required this.nodeTest,
-    this.predicate,
+    required this.predicate,
   });
 
   final AxesAxis? axis;
   final String nodeTest;
-  final String? predicate;
+  final List<String> predicate;
 
   static AxesAxis createAxis(String axis) {
     final map = {

@@ -57,36 +57,30 @@ Selector _parseSelector(String input) {
     withoutAxis = source;
   }
 
-  // node-test
-  final match = nodeTestWithPredicate.firstMatch(withoutAxis);
-  if (match == null) {
-    // without predicate
-    return Selector(
-        selectorType: selectorType,
-        axes: SelectorAxes(
-          axis: axis,
-          nodeTest: withoutAxis,
-        ));
+  var nodeTest = withoutAxis;
+  final predicates = predicateReg.allMatches(withoutAxis);
+  for (final predicate in predicates) {
+    nodeTest = nodeTest.replaceAll(predicate.group(0) ?? '', '');
   }
+  final predicateList = predicates
+      .map((e) => e.namedGroup('predicate'))
+      .whereType<String>()
+      .toList();
 
-  var nodeTest = match.namedGroup('node')!;
-  // special nodeTest
   if (nodeTest == '.') {
     axis = AxesAxis.self;
     nodeTest = '*';
-  }
-  if (nodeTest == '..') {
+  } else if (nodeTest == '..') {
     axis = AxesAxis.parent;
     nodeTest = '*';
   }
 
-  // with predicate
   return Selector(
       selectorType: selectorType,
       axes: SelectorAxes(
         nodeTest: nodeTest,
         axis: axis,
-        predicate: match.namedGroup('predicate')!,
+        predicate: predicateList,
       ));
 }
 
@@ -94,12 +88,10 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
   // attr
   if (source.startsWith('@')) {
     return Selector(
-        selectorType: selectorType,
-        axes: SelectorAxes(
-          axis: AxesAxis.self,
-          nodeTest: '*',
-        ),
-        attr: source.substring(1));
+      selectorType: selectorType,
+      axes: SelectorAxes(axis: AxesAxis.self, nodeTest: '*', predicate: []),
+      attr: source.substring(1),
+    );
   }
 
   // parents
@@ -109,6 +101,7 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
         axes: SelectorAxes(
           axis: AxesAxis.parent,
           nodeTest: '*',
+          predicate: [],
         ));
   }
 
@@ -119,6 +112,7 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
         axes: SelectorAxes(
           axis: AxesAxis.self,
           nodeTest: '*',
+          predicate: [],
         ));
   }
 
@@ -129,11 +123,12 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
       axes: SelectorAxes(
         nodeTest: 'node()',
         axis: AxesAxis.child,
+        predicate: [],
       ),
     );
   }
 
-  // text()
+  // text() string() .. xxx()
   final function = RegExp(r'^\w*\(\s*\)$').firstMatch(source);
   if (function != null) {
     return Selector(
@@ -142,6 +137,7 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
       axes: SelectorAxes(
         nodeTest: '*',
         axis: AxesAxis.self,
+        predicate: [],
       ),
     );
   }

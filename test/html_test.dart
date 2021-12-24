@@ -127,4 +127,9 @@ void main() {
             .nodes,
         html.queryAll('#td3'));
   });
+
+  test('multi predicate', () {
+    expect(html.queryXPath('//td[@class^="second"][2]').nodes,
+        html.queryAll('#td6'));
+  });
 }

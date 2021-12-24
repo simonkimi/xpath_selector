@@ -17,3 +17,5 @@ final functionNodeTest = RegExp(r'^(?<function>\w+)\(\s*\)$');
 
 final functionPredicate = RegExp(
     r'''(?<not>(?:not)?)\s*\(?\s*(?<function>[\w-]{4,})\s*\(\s*(?<param1>.+?)\s*,\s*['"](?<param2>.+?)\s*['"]\s*\)\)?''');
+
+final predicateReg = RegExp(r'\[(?<predicate>.+?)\]');

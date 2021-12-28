@@ -44,3 +44,7 @@
 ## 2.2.1
 
 - Bug fix
+
+## 2.2.2
+
+- Bug fix: ancestor

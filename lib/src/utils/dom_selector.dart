@@ -17,6 +17,9 @@ List<XPathNode<T>> ancestor<T>(XPathNode<T>? e) {
 
   while (currentDom.parent != null) {
     currentDom = currentDom.parent!;
+    if (currentDom.name != null) {
+      result.add(currentDom);
+    }
   }
   return result;
 }

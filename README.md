@@ -4,7 +4,7 @@
 
 An XPath selector for locating Html and Xml elements
 
-English | [中文文档](https://github.com/simonkimi/xpath_selector/blob/master/README-zh_CN.MD)
+English | [简体中文](https://github.com/simonkimi/xpath_selector/blob/master/README-zh_CN.MD)
 
 ## Easy to use
 
@@ -71,3 +71,8 @@ In the attribute selector, the parser extends the following attribute selector i
 ### 1.x => 2.0
 1. Remove class`XPathElement`, which merge to`XPathNode`
 2. In `XPathResult`, `elements`=>`nodes`, `elements`=>`element`
+
+
+
+##Hint
+- When parsing HTML, some nonstandard structures may change. For example, the missing `tbody` table will be added, which may lead to query problems.

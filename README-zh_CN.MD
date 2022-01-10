@@ -4,7 +4,7 @@
 
 一款用于定位Html和Xml元素的XPath选择器
 
-[English](https://github.com/simonkimi/xpath_selector/blob/master/README.md) | 中文文档
+[English](https://github.com/simonkimi/xpath_selector/blob/master/README.md) | 简体中文
 
 ## 轻松使用
 
@@ -60,3 +60,6 @@ print(result1.attr);
 ### 1.x => 2.0
 1. 移除类`XPathElement`, 与`XPathNode`类合并
 2. `XPathResult`中`elements`改为`nodes`, `elements`改为`element`
+
+## 提示
+- 在解析html时, 一些不标准的的结构可能发生改变, 例如缺少`tbody`的`table`会被补上`tbody`, 这可能导致查询问题.

@@ -195,7 +195,7 @@ String? elementFunction({required XPathNode node, required String function}) {
       case 'prefix()':
         return node.name?.namespace;
       default:
-        throw ArgumentError('Unknown function: $function');
+        throw UnsupportedError('Unsupported function: $function');
     }
   }
 }

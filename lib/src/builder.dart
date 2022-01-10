@@ -32,6 +32,7 @@ class XPathResult<T> {
   XPathNode<T>? get element => nodes.isNotEmpty ? nodes.first : null;
 }
 
+/// Query root node
 class XPath<T> {
   /// Create XPath by element
   XPath(this.root);
@@ -59,7 +60,7 @@ class XPath<T> {
   static XPath<import_xml.XmlNode> xmlElement(import_xml.XmlElement element) =>
       XPath<import_xml.XmlNode>(XmlNodeTree(element));
 
-  /// query XPath
+  /// Query XPath
   XPathResult<T> query(String xpath) {
     final result = <XPathNode<T>>[];
     final resultAttrs = <String?>[];

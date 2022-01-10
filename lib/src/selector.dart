@@ -26,7 +26,7 @@ class Selector {
       '${selectorType == SelectorType.descendant ? '//' : '/'}${axes.axis?.toString() ?? ''}${axes.axis != null ? '::' : ''}${function ?? axes.nodeTest}${axes.predicate.isNotEmpty ? axes.predicate.map((e) => '[$e]').join() : ''}';
 }
 
-// 轴
+// axes
 enum AxesAxis {
   ancestor,
   ancestorOrSelf,

@@ -1,5 +1,4 @@
 import '../../xpath_selector.dart';
-import 'base.dart';
 import 'package:html/dom.dart';
 
 /// Built-in html model.

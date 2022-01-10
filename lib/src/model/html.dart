@@ -1,3 +1,4 @@
+import '../../xpath_selector.dart';
 import 'base.dart';
 import 'package:html/dom.dart';
 
@@ -22,11 +23,11 @@ class HtmlNodeTree extends XPathNode<Node> {
 
   @override
   HtmlNodeTree? get nextSibling =>
-      isElement ? from((node as Element).nextElementSibling) : null;
+      isElement ? from(element.nextElementSibling) : null;
 
   @override
   HtmlNodeTree? get previousSibling =>
-      isElement ? from((node as Element).previousElementSibling) : null;
+      isElement ? from(element.previousElementSibling) : null;
 
   @override
   Map<String, String> get attributes =>
@@ -39,13 +40,23 @@ class HtmlNodeTree extends XPathNode<Node> {
   String toString() => node.toString();
 
   @override
-  bool operator ==(Object other) =>
-      other is HtmlNodeTree ? other.node == node : false;
+  bool operator ==(Object other) => other is HtmlNodeTree && other.node == node;
 
   @override
   int get hashCode => node.hashCode;
 
   @override
   NodeTagName? get name =>
-      isElement ? NodeTagName(localName: (node as Element).localName) : null;
+      isElement ? NodeTagName(localName: element.localName) : null;
+
+  Element get element {
+    if (!isElement) throw Exception('$node is not Element');
+    return node as Element;
+  }
+}
+
+extension HtmlElementHelper on Element {
+  /// Html XPath query
+  XPathResult<Node> queryXPath(String xpath) =>
+      XPath.htmlElement(this).query(xpath);
 }

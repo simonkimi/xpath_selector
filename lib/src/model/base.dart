@@ -25,6 +25,13 @@ class NodeTagName {
 
   @override
   String toString() => '<${qualified ?? 'Null'}>';
+
+  @override
+  bool operator ==(Object other) =>
+      other is NodeTagName && other.qualified == qualified;
+
+  @override
+  int get hashCode => qualified.hashCode;
 }
 
 /// If you want to create your own model, please extend this class.

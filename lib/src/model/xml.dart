@@ -1,5 +1,5 @@
 import 'package:xml/xml.dart';
-import 'base.dart';
+import '../../xpath_selector.dart';
 
 /// Built-in xml model.
 class XmlNodeTree extends XPathNode<XmlNode> {
@@ -28,15 +28,14 @@ class XmlNodeTree extends XPathNode<XmlNode> {
   String? get text => node.text;
 
   @override
-  bool operator ==(Object other) =>
-      other is XmlNodeTree ? other.node == node : false;
+  bool operator ==(Object other) => other is XmlNodeTree && other.node == node;
 
   @override
   int get hashCode => node.hashCode;
 
   @override
   NodeTagName? get name =>
-      isElement ? NodeTagName.from((node as XmlElement).name.qualified) : null;
+      isElement ? NodeTagName.from(element.name.qualified) : null;
 
   @override
   String toString() => node.toString();
@@ -46,4 +45,15 @@ class XmlNodeTree extends XPathNode<XmlNode> {
 
   @override
   XmlNodeTree? get previousSibling => from(node.previousSibling);
+
+  XmlElement get element {
+    if (!isElement) throw Exception('$node is not XmlElement');
+    return node as XmlElement;
+  }
+}
+
+extension XmlElementHelper on XmlElement {
+  /// Xml XPath query
+  XPathResult<XmlNode> queryXPath(String xpath) =>
+      XPath.xmlElement(this).query(xpath);
 }

@@ -48,3 +48,6 @@
 ## 2.2.2
 
 - Bug fix: ancestor
+
+## 2.2.3
+- Code optimization

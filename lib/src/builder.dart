@@ -30,6 +30,9 @@ class XPathResult<T> {
   /// Get the first node of query results
   @Deprecated('Use node instead')
   XPathNode<T>? get element => nodes.isNotEmpty ? nodes.first : null;
+
+  @override
+  String toString() => '<XPathResult: $nodes>';
 }
 
 /// Query root node

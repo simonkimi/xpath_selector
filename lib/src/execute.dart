@@ -154,10 +154,7 @@ bool _matchPredicates({
   predicate = predicate.replaceAll(' div ', ' / ');
   predicate = predicate.replaceAll(' mod ', ' % ');
 
-  if (predicateSym.allMatches(predicate).length >= 2 ||
-      predicate.contains(' && ') ||
-      predicate.contains(' || ')) {
-    // 多计算
+  if (predicate.contains(' && ') || predicate.contains(' || ')) {
     return _multipleCompare(
       predicate: predicate,
       element: element,
@@ -165,7 +162,6 @@ bool _matchPredicates({
       length: length,
     );
   } else {
-    // 单计算
     // Position
     if (predicateLast.hasMatch(predicate) || predicateInt.hasMatch(predicate)) {
       return _singlePosition(

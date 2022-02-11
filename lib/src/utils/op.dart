@@ -48,8 +48,6 @@ bool opString(String attr, String value, String op) {
       return attr.contains(value);
     case '^=':
       return attr.startsWith(value);
-    case '|=':
-      return attr.split(RegExp(r'\s|-')).first == value;
     case r'$=':
       return attr.endsWith(value);
     default:

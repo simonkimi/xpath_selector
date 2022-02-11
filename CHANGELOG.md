@@ -35,7 +35,7 @@
 
 ## 2.1.0
 
-- Add query to node
+- Add a query to node
 
 ## 2.2.0
 
@@ -50,4 +50,9 @@
 - Bug fix: ancestor
 
 ## 2.2.3
+
 - Code optimization
+
+## 2.2.4
+
+- Fix issue #4

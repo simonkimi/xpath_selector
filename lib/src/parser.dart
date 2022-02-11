@@ -11,19 +11,11 @@ List<List<Selector>> parseSelectGroup(String xpath) {
 
   for (final _path in combine) {
     final path = _path.trim();
-    final selectorSources = <String>[];
-    final matches = RegExp("//|/").allMatches(path).toList();
-    for (var index = 0; index < matches.length; index++) {
-      if (index > 0) {
-        selectorSources.add(
-            path.substring(matches[index - 1].start, matches[index].start));
-      }
-      if (index == matches.length - 1) {
-        selectorSources.add(path.substring(matches[index].start, path.length));
-      }
-    }
-    selectorList.add(selectorSources.map(_parseSelector).toList());
+    final xpathItem =
+        xpathGroup.allMatches(path).map((e) => e.group(0)!.trim());
+    selectorList.add(xpathItem.map(_parseSelector).toList());
   }
+
   return selectorList;
 }
 
@@ -141,6 +133,7 @@ Selector? _parseSimpleSelector(SelectorType selectorType, String source) {
       ),
     );
   }
+  return null;
 }
 
 /// if last selector is @attr or function, add to result

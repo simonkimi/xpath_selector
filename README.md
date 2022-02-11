@@ -59,13 +59,13 @@ Please refer to [`HtmlNodeTree`](https://github.com/simonkimi/xpath_selector/blo
 
 In the attribute selector, the parser extends the following attribute selector in CSS style
 
-|Expression|Css|Description|
-|---|---|---|
-|[@attr='value']|[attr="value"]|Selects all elements with attr="value"|
-|[@attr~='value']|[attr~="value"]|Selects all elements attribute containing the word "value"|
-|[@attr^='value']|[attr^="value"]|Selects all elements whose attr attribute value begins with "value"|
-|[@attr$='value']|[attr$="value"]|Selects all elements whose attr attribute value ends with "value"|
-|[@attr*='value']|[attr*="value"]|Selects all elements whose attr attribute value contains the substring "value"|
+| Expression       | Css             | Description                                                                    |
+|------------------|-----------------|--------------------------------------------------------------------------------|
+| [@attr='value']  | [attr="value"]  | Selects all elements with attr="value"                                         |
+| [@attr~='value'] | [attr~="value"] | Selects all elements attribute containing the word "value"                     |
+| [@attr^='value'] | [attr^="value"] | Selects all elements whose attr attribute value begins with "value"            |
+| [@attr$='value'] | [attr$="value"] | Selects all elements whose attr attribute value ends with "value"              |
+| [@attr*='value'] | [attr*="value"] | Selects all elements whose attr attribute value contains the substring "value" |
 
 ## Breaking changes
 ### 1.x => 2.0

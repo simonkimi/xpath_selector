@@ -48,13 +48,13 @@ print(result1.attr);
 
 在属性选择器中, 本解析器以css风格扩展了如下属性选择器
 
-|表达式|css|描述|
-|---|---|---|
-|[@attr='value']|[attr="value"]|选择带有 attr="value" 属性的所有元素。|
-|[@attr~='value']|[attr~="value"]|选择 attr 属性包含单词 "value" 的所有元素。|
-|[@attr^='value']|[attr^="value"]|选择其 attr 属性值以 "value" 开头的元素。|
-|[@attr$='value']|[attr$="value"]|选择其 attr 属性值以 "value" 结尾的元素。|
-|[@attr*='value']|[attr*="value"]|选择其 attr 属性值中包含 "value" 子串的元素。|
+| 表达式              | css             | 描述                             |
+|------------------|-----------------|--------------------------------|
+| [@attr='value']  | [attr="value"]  | 选择带有 attr="value" 属性的所有元素。     |
+| [@attr~='value'] | [attr~="value"] | 选择 attr 属性包含单词 "value" 的所有元素。  |
+| [@attr^='value'] | [attr^="value"] | 选择其 attr 属性值以 "value" 开头的元素。   |
+| [@attr$='value'] | [attr$="value"] | 选择其 attr 属性值以 "value" 结尾的元素。   |
+| [@attr*='value'] | [attr*="value"] | 选择其 attr 属性值中包含 "value" 子串的元素。 |
 
 ## 破坏性改动
 ### 1.x => 2.0

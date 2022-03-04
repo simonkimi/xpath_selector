@@ -1,5 +1,3 @@
-import 'package:html/dom.dart';
-import 'package:xml/xml.dart';
 import 'package:xpath_selector/src/reg.dart';
 import 'package:xpath_selector/src/selector.dart';
 

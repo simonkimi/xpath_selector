@@ -47,6 +47,9 @@ abstract class XPathNode<T> {
   /// Return the concatenated text of this node and all its descendants
   String? get text;
 
+  /// Return the origin content of this node that include tags
+  String? get html;
+
   /// Return the parent node of this node, or `null` if there is none.
   XPathNode<T>? get parent;
 

@@ -178,9 +178,7 @@ String? elementFunction({required XPathNode node, required String function}) {
       case 'string()':
         return node.text ?? '';
       case 'html()':
-        return node.isElement
-            ? (node.node as Element).outerHtml
-            : (node.node as XmlNode).outerXml;
+        return node.html ?? '';
       case 'name()':
       case 'qualified()':
         return node.name?.qualified;

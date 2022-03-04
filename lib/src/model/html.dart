@@ -36,6 +36,9 @@ class HtmlNodeTree extends XPathNode<Node> {
   String? get text => node.text;
 
   @override
+  String? get html => element.outerHtml;
+
+  @override
   String toString() => node.toString();
 
   @override

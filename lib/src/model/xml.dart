@@ -28,6 +28,9 @@ class XmlNodeTree extends XPathNode<XmlNode> {
   String? get text => node.text;
 
   @override
+  String? get html => node.outerXml;
+
+  @override
   bool operator ==(Object other) => other is XmlNodeTree && other.node == node;
 
   @override

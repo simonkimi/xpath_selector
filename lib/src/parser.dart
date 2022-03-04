@@ -1,3 +1,5 @@
+import 'package:html/dom.dart';
+import 'package:xml/xml.dart';
 import 'package:xpath_selector/src/reg.dart';
 import 'package:xpath_selector/src/selector.dart';
 
@@ -11,8 +13,7 @@ List<List<Selector>> parseSelectGroup(String xpath) {
 
   for (final _path in combine) {
     final path = _path.trim();
-    final xpathItem =
-        xpathGroup.allMatches(path).map((e) => e.group(0)!.trim());
+    final xpathItem = xpathGroup.allMatches(path).map((e) => e.group(0)!.trim());
     selectorList.add(xpathItem.map(_parseSelector).toList());
   }
 
@@ -54,10 +55,8 @@ Selector _parseSelector(String input) {
   for (final predicate in predicates) {
     nodeTest = nodeTest.replaceAll(predicate.group(0) ?? '', '');
   }
-  final predicateList = predicates
-      .map((e) => e.namedGroup('predicate'))
-      .whereType<String>()
-      .toList();
+  final predicateList =
+      predicates.map((e) => e.namedGroup('predicate')).whereType<String>().toList();
 
   if (nodeTest == '.') {
     axis = AxesAxis.self;
@@ -155,8 +154,7 @@ List<String?> parseAttr({
         }
       } else if (lastSelector.function != null) {
         // function
-        result.add(
-            elementFunction(node: element, function: lastSelector.function!));
+        result.add(elementFunction(node: element, function: lastSelector.function!));
       } else if (lastSelector.axes.axis == AxesAxis.attribute) {
         // attr
         if (lastSelector.axes.nodeTest == '*') {
@@ -179,6 +177,10 @@ String? elementFunction({required XPathNode node, required String function}) {
       case 'text()':
       case 'string()':
         return node.text ?? '';
+      case 'html()':
+        return node.isElement
+            ? (node.node as Element).outerHtml
+            : (node.node as XmlNode).outerXml;
       case 'name()':
       case 'qualified()':
         return node.name?.qualified;

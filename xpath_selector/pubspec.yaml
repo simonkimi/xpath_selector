@@ -1,6 +1,6 @@
 name: xpath_selector
-description: XPath package for HTML and XML, most XPath syntaxs are supported.
-version: 2.2.4
+description: XPath package for HTML and XML, most XPath syntax are supported.
+version: 2.2.4+1
 homepage: https://github.com/simonkimi/xpath_selector
 
 environment:
@@ -8,8 +8,6 @@ environment:
 
 dependencies:
   expressions: ^0.2.3
-  xml: ^5.3.1
-  html: ^0.15.0
 
 dev_dependencies:
   lints: ^1.0.0

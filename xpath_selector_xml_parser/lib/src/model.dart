@@ -1,5 +1,5 @@
+import 'package:xpath_selector/xpath_selector.dart';
 import 'package:xml/xml.dart';
-import '../../xpath_selector.dart';
 
 /// Built-in xml model.
 class XmlNodeTree extends XPathNode<XmlNode> {

@@ -1,5 +1,5 @@
-import '../../xpath_selector.dart';
 import 'package:html/dom.dart';
+import 'package:xpath_selector/xpath_selector.dart';
 
 /// Built-in html model.
 class HtmlNodeTree extends XPathNode<Node> {
@@ -54,8 +54,4 @@ class HtmlNodeTree extends XPathNode<Node> {
   }
 }
 
-extension HtmlElementHelper on Element {
-  /// Html XPath query
-  XPathResult<Node> queryXPath(String xpath) =>
-      XPath.htmlElement(this).query(xpath);
-}
+

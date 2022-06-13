@@ -1,0 +1,15 @@
+name: xpath_selector_xml_parser
+description: A xml parser implementation with xml for xpath_selector
+version: 1.0.0
+
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  xpath_selector: ^2.2.4
+  xml: any
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.16.0

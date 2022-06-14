@@ -1,5 +1,6 @@
 # xpath_selector_html_parser
 
+English | [简体中文](https://github.com/simonkimi/xpath_selector/blob/master/xpath_selector_html_parser/README_zh_CN.md)
 
 ## Usage
 

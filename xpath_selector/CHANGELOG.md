@@ -58,4 +58,9 @@
 - Fix issue #4
 
 ## 3.0.0
+
 - Separating XML and HTML parsers
+
+## 3.0.1
+
+- Update examples

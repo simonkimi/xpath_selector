@@ -4,7 +4,7 @@
 
 An XPath selector for locating Html and Xml elements
 
-English | [简体中文](https://github.com/simonkimi/xpath_selector/blob/master/README-zh_CN.MD)
+English | [简体中文](https://github.com/simonkimi/xpath_selector/blob/master/xpath_selector/README-zh_CN.MD)
 
 ## Parser
 
@@ -17,7 +17,7 @@ This library is for xpath selection only, you must define a parser, and here is 
   by [xml](https://pub.flutter-io.cn/packages/xml)
 
 If you want to use another parser, refer to these two libraries to define your own parser that implements
-the `XPathNode<t>` interface
+the `XPathNode<T>` interface
 
 ## Extended syntax
 

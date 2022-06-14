@@ -11,6 +11,8 @@ dependencies:
   xpath_selector: ^3.0.0
   xpath_selector_html_parser: ^3.0.0
   xpath_selector_xml_parser: ^3.0.0
+  html: ^0.15.0
+  xml: ^5.3.1
 
 
 dev_dependencies:

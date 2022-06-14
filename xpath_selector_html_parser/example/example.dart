@@ -1,18 +1,5 @@
-# xpath_selector_html_parser
-
-
-## Usage
-
-There are three ways to create xpath queries: 
-
-1. Use the `queryXPath` method directly on the html `Node`
-2. Use `HtmlXpath.node ([HtmlNode])` to create a query and then use the `query` method to perform the query
-3. Use `HtmlXpath.html ([HtmlString])` to parse the HTML, and then use `query` to query
-
-## Example
-```dart
 import 'package:html/parser.dart';
-import 'package:xpath_selector_html_parser/src/ext.dart';
+import 'package:xpath_selector_html_parser/xpath_selector_html_parser.dart';
 
 final String htmlString = '''
 <html lang="en">
@@ -50,10 +37,3 @@ void main() {
   print(html2.query('//div/a/@href').attrs);
   print(html3.query('//tr/td[@class^="fir" and not(text()="4")]'));
 }
-
-```
-
-
-## Hint
-- When parsing html, some nonstandard structures may change. For example, the missing `tbody` table will be added, which
-  may lead to query problems.

@@ -2,8 +2,10 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:xpath_selector/src/utils/dom_selector.dart';
 import 'package:xpath_selector/xpath_selector.dart';
+import 'package:xpath_selector/src/utils/dom_selector.dart';
+import 'package:xpath_selector_html_parser/xpath_selector_html_parser.dart';
+
 
 final String htmlString = '''
 <html lang="en">

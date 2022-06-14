@@ -1,18 +1,18 @@
 # xpath_selector_html_parser
 
+## 使用方法
 
-## Usage
+有三种方法使用改库进行查询
 
-There are three ways to create xpath queries: 
-
-1. Use the `queryXPath` method directly on the html `Node`
-2. Use `HtmlXpath.node ([HtmlNode])` to create a query and then use the `query` method to perform the query
-3. Use `HtmlXpath.html ([HtmlString])` to parse the HTML, and then use `query` to query
+1. 对Html的`node`节点直接使用`queryXPath`方法
+2. 使用`HtmlXPath.node([HtmlNode])`创建查询, 然后使用`query`方法进行查询
+3. 使用`HtmlXPath.html([HtmlString])`对html进行解析, 然后使用`query`方法进行查询
 
 ## Example
+
 ```dart
 import 'package:html/parser.dart';
-import 'package:xpath_selector_html_parser/src/ext.dart';
+import 'package:xpath_selector_html_parser/xpath_selector_html_parser.dart';
 
 final String htmlString = '''
 <html lang="en">
@@ -47,13 +47,14 @@ void main() {
   final html3 = HtmlXPath.html(htmlString);
 
   print(html1.queryXPath('//div/a'));
-  print(html2.query('//div/a/@href').attrs);
+  print(html2
+      .query('//div/a/@href')
+      .attrs);
   print(html3.query('//tr/td[@class^="fir" and not(text()="4")]'));
 }
 
 ```
 
+## 提示
 
-## Hint
-- When parsing html, some nonstandard structures may change. For example, the missing `tbody` table will be added, which
-  may lead to query problems.
+- 由于Html库在解析的时候会重新格式化, 导致dom的结构产生变化, 例如缺少`tbody`的`table`会被补上. 这可能导致查询问题.

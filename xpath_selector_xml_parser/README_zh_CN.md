@@ -1,12 +1,12 @@
 # xpath_selector_xml_parser
 
-## Usage
+## 使用方法
 
-There are three ways to create xpath queries: 
+有三种方法使用改库进行查询
 
-1. Use the `queryXPath` method directly on the html `Node`
-2. Use `XmlXpath.node ([XmlNode])` to create a query and then use the `query` method to perform the query
-3. Use `XmlXpath.html ([XmlString])` to parse the xml, and then use `query` to query
+1. 对Html的`node`节点直接使用`queryXPath`方法
+2. 使用`XmlXPath.node([XmlNode])`创建查询, 然后使用`query`方法进行查询
+3. 使用`XmlXPath.html([XmlString])`对html进行解析, 然后使用`query`方法进行查询
 
 ## Example
 
@@ -56,5 +56,6 @@ void main() {
   print(xml2.query('//book/title'));
   print(xml3.query('//*[@lang="en"]'));
 }
+
 
 ```

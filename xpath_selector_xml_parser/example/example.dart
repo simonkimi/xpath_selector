@@ -1,16 +1,3 @@
-# xpath_selector_xml_parser
-
-## Usage
-
-There are three ways to create xpath queries: 
-
-1. Use the `queryXPath` method directly on the html `Node`
-2. Use `XmlXpath.node ([XmlNode])` to create a query and then use the `query` method to perform the query
-3. Use `XmlXpath.html ([XmlString])` to parse the xml, and then use `query` to query
-
-## Example
-
-```dart
 import 'package:xml/xml.dart';
 import 'package:xpath_selector_xml_parser/xpath_selector_xml_parser.dart';
 
@@ -56,5 +43,3 @@ void main() {
   print(xml2.query('//book/title'));
   print(xml3.query('//*[@lang="en"]'));
 }
-
-```

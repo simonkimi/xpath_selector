@@ -2,6 +2,7 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 import 'package:xml/xml.dart';
 import 'package:xpath_selector/xpath_selector.dart';
+import 'package:xpath_selector_xml_parser/xpath_selector_xml_parser.dart';
 
 final input = '''
 <bookstore xmlns:h="https://test.z31.ink" xmlns:t="https://test.z31.ink/sub">

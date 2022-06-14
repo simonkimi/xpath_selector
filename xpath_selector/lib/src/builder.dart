@@ -37,27 +37,6 @@ class XPath<T> {
 
   final XPathNode<T> root;
 
-  // /// Create XPath by html string
-  // static XPath<import_html.Node> html(String value) {
-  //   final dom = import_html.parse(value).documentElement;
-  //   if (dom == null) throw UnsupportedError('No html');
-  //   return XPath<import_html.Node>(HtmlNodeTree(dom));
-  // }
-  //
-  // /// Create XPath by html element
-  // static XPath<import_html.Node> htmlElement(import_html.Element element) =>
-  //     XPath(HtmlNodeTree(element));
-  //
-  // /// Create XPath by xml string
-  // static XPath<import_xml.XmlNode> xml(String value) {
-  //   final dom = import_xml.XmlDocument.parse(value);
-  //   return XPath(XmlNodeTree(dom));
-  // }
-  //
-  // /// Create XPath by xml element
-  // static XPath<import_xml.XmlNode> xmlElement(import_xml.XmlElement element) =>
-  //     XPath<import_xml.XmlNode>(XmlNodeTree(element));
-
   /// Query XPath
   XPathResult<T> query(String xpath) {
     final result = <XPathNode<T>>[];
@@ -75,4 +54,7 @@ class XPath<T> {
     }
     return XPathResult(result, resultAttrs);
   }
+
+  /// Equal to [query]
+  XPathResult<T> queryXPath(String xpath) => query(xpath);
 }

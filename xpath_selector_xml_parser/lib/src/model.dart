@@ -51,9 +51,3 @@ class XmlNodeTree extends XPathNode<XmlNode> {
     return node as XmlElement;
   }
 }
-
-extension XmlElementHelper on XmlElement {
-  /// Xml XPath query
-  XPathResult<XmlNode> queryXPath(String xpath) =>
-      XPath.xmlElement(this).query(xpath);
-}

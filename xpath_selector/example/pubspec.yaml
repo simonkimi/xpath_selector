@@ -1,6 +1,7 @@
 name: xpath_selector_example
 description: A xml parser implementation with xml for xpath_selector
 version: 1.0.0
+publish_to: none
 
 
 environment:
@@ -9,6 +10,10 @@ environment:
 dependencies:
   xpath_selector:
     path: ../
+#  xpath_selector_html_parser:
+#    path: ../../xpath_selector_html_parser
+#  xpath_selector_xml_parser:
+#    path: ../../xpath_selector_xml_parser
 
 dev_dependencies:
   lints: ^2.0.0

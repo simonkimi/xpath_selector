@@ -6,54 +6,18 @@ An XPath selector for locating Html and Xml elements
 
 English | [简体中文](https://github.com/simonkimi/xpath_selector/blob/master/README-zh_CN.MD)
 
-## Easy to use
+## Parser
 
-You have three ways to do XPath queries
+This library is for xpath selection only, you must define a parser, and here is my prebuilt parser:
 
-```dart
+- [xpath_selector_html_parser](https://pub.flutter-io.cn/packages/xpath_selector_html_parser)
+  by [html](https://pub.flutter-io.cn/packages/html)
 
-final html = '''<html><div></div></html>''';
-final htmlDom = parse(htmlString).documentElement!;
-final xml = '''<root><child></child></root>''';
-final xmlRoot = XmlDocument
-    .parse()
-    .rootElement;
+- [xpath_selector_xml_parser](https://pub.flutter-io.cn/packages/xpath_selector_xml_parser)
+  by [xml](https://pub.flutter-io.cn/packages/xml)
 
-// Create by html string
-final result1 = XPath.html(html).query('//div');
-final result2 = XPath.xml(html).query('//child');
-
-// Or through the dom of the HTML or Xml package
-final result3 = XPath.htmlElement(htmlDom).query('//div');
-final result4 = XPath.xmlElement(xmlRoot).query('//child');
-
-// Or query directly through element
-final result5 = htmlDom.queryXPath('//div');
-final result6 = xmlRoot.queryXPath('//child');
-
-// Get all nodes of query results
-print(result1.nodes);
-
-// Get the first node of query results
-print(result1.node);
-
-// Get all properties of query results
-print(result1.attrs);
-
-// Get the first valid property of the query result (not null)
-print(result1.attr);
-```
-
-More examples can be referred to [Xml](https://github.com/simonkimi/xpath_selector/blob/master/test/xml_test.dart)
-| [Html](https://github.com/simonkimi/xpath_selector/blob/master/test/html_test.dart)
-
-## Custom parser
-
-This package uses [html](https://pub.flutter-io.cn/packages/html) and [xml](https://pub.flutter-io.cn/packages/xml) as the default parsing package
-
-
-If you want to use another parsing package (such as [universal_html](https://pub.flutter-io.cn/packages/universal_html)),
-Please refer to [`HtmlNodeTree`](https://github.com/simonkimi/xpath_selector/blob/master/lib/src/model/html.dart) create your own model.
+If you want to use another parser, refer to these two libraries to define your own parser that implements
+the `XPathNode<t>` interface
 
 ## Extended syntax
 
@@ -68,11 +32,15 @@ In the attribute selector, the parser extends the following attribute selector i
 | [@attr*='value'] | [attr*="value"] | Selects all elements whose attr attribute value contains the substring "value" |
 
 ## Breaking changes
+
 ### 1.x => 2.0
+
 1. Remove class`XPathElement`, which merge to`XPathNode`
 2. In `XPathResult`, `elements`=>`nodes`, `elements`=>`element`
 
+### 2.0 => 3.0
 
+1. Remove the built-in html and xlm parsers, and make it independent
+   to [xpath_selector_html_parser](https://pub.flutter-io.cn/packages/xpath_selector_html_parser)
+   and [xpath_selector_xml_parser](https://pub.flutter-io.cn/packages/xpath_selector_xml_parser)
 
-##Hint
-- When parsing HTML, some nonstandard structures may change. For example, the missing `tbody` table will be added, which may lead to query problems.

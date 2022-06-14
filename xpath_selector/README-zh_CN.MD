@@ -6,43 +6,17 @@
 
 [English](https://github.com/simonkimi/xpath_selector/blob/master/README.md) | 简体中文
 
-## 轻松使用
+## 解析器
 
-您有三种方法可以进行XPath查询
+本库仅用于xpath选择, 您必须定义一个解析器, 下面是我预先构建的解析器:
 
-```dart
-// 通过字符串创建
-final result1 = XPath.html(html).query('//div');
-final result2 = XPath.xml(html).query('//child');
+- [xpath_selector_html_parser](https://pub.flutter-io.cn/packages/xpath_selector_html_parser)
+  使用[html](https://pub.flutter-io.cn/packages/html)库
 
-// 或通过htmlh或xml包的dom创建
-final result3 = XPath.htmlElement(htmlDom).query('//div');
-final result4 = XPath.xmlElement(xmlRoot).query('//child');
+- [xpath_selector_xml_parser](https://pub.flutter-io.cn/packages/xpath_selector_xml_parser)
+  使用[xml](https://pub.flutter-io.cn/packages/xml)库
 
-// 或直接通过Element查询
-final result5 = htmlDom.queryXPath('//div');
-final result6 = xmlRoot.queryXPath('//child');
-
-
-// 获取查询结果的所有节点
-print(result1.nodes);
-
-// 获取查询结果的第一个节点
-print(result1.node);
-
-// 获取查询结果的所有属性
-print(result1.attrs);
-
-// 获取查询结果的第一个有效属性
-print(result1.attr);
-```
-
-更多的例子可以参考 [Xml测试例](https://github.com/simonkimi/xpath_selector/blob/master/test/xml_test.dart) | [Html测试例](https://github.com/simonkimi/xpath_selector/blob/master/test/html_test.dart)
-
-## 使用自定义的解析器
-此库使用了 [html](https://pub.flutter-io.cn/packages/html) 和 [xml](https://pub.flutter-io.cn/packages/xml) 作为默认解析库
-
-如果您想用其他的解析库(例如[universal_html](https://pub.flutter-io.cn/packages/universal_html)), 请参照 [`HtmlNodeTree`](https://github.com/simonkimi/xpath_selector/blob/master/lib/src/model/html.dart) 创建您自己的模型.
+如果您想使用其他解析器, 请参照这两个库定义您自己的解析器, 实现XPathNode<T>接口
 
 ## 扩展语法
 
@@ -57,9 +31,17 @@ print(result1.attr);
 | [@attr*='value'] | [attr*="value"] | 选择其 attr 属性值中包含 "value" 子串的元素。 |
 
 ## 破坏性改动
+
 ### 1.x => 2.0
+
 1. 移除类`XPathElement`, 与`XPathNode`类合并
 2. `XPathResult`中`elements`改为`nodes`, `elements`改为`element`
 
+### 2.0 => 3.0
+
+1. 移除内置的html与xml解析器, 并将其独立到[xpath_selector_html_parser](https://pub.flutter-io.cn/packages/xpath_selector_html_parser)
+   和[xpath_selector_xml_parser](https://pub.flutter-io.cn/packages/xpath_selector_xml_parser)中, 具体用法请参照库Readme
+
 ## 提示
+
 - 在解析html时, 一些不标准的的结构可能发生改变, 例如缺少`tbody`的`table`会被补上`tbody`, 这可能导致查询问题.

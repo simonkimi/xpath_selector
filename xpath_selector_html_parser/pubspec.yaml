@@ -1,14 +1,16 @@
 name: xpath_selector_html_parser
 description: A html parser implementation with html for xpath_selector
-version: 1.0.0
+version: 3.0.0
+homepage: https://github.com/simonkimi/xpath_selector
+
 
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  xpath_selector: ^2.2.4
-  html: any
+  xpath_selector: any
+  html: ^0.15.0
 
 dev_dependencies:
   lints: ^2.0.0

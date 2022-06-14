@@ -53,5 +53,3 @@ class HtmlNodeTree extends XPathNode<Node> {
     return node as Element;
   }
 }
-
-

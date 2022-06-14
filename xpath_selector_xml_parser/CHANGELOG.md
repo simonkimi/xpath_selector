@@ -1,3 +1,3 @@
-## 1.0.0
+## 3.0.0
 
-- Initial version.
+- Initial version. Synchronize xpath_selector versions

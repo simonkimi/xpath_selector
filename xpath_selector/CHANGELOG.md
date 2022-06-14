@@ -56,3 +56,6 @@
 ## 2.2.4
 
 - Fix issue #4
+
+## 3.0.0
+- Separating XML and HTML parsers

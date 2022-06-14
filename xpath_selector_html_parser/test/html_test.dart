@@ -6,7 +6,6 @@ import 'package:xpath_selector/xpath_selector.dart';
 import 'package:xpath_selector/src/utils/dom_selector.dart';
 import 'package:xpath_selector_html_parser/xpath_selector_html_parser.dart';
 
-
 final String htmlString = '''
 <html lang="en">
 <body>

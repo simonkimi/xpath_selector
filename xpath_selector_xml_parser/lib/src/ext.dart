@@ -11,10 +11,12 @@ extension HtmlElementHelper on XmlNode {
 class XmlXPath extends XPath<XmlNode> {
   XmlXPath(XPathNode<XmlNode> root) : super(root);
 
+  /// Create query by xml string
   static XmlXPath xml(String xml) {
     final dom = XmlDocument.parse(xml).rootElement;
     return XmlXPath(XmlNodeTree(dom));
   }
 
+  /// Create query by xml node
   static XmlXPath node(XmlNode node) => XmlXPath(XmlNodeTree(node));
 }

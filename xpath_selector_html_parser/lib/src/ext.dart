@@ -12,11 +12,13 @@ extension HtmlElementHelper on Element {
 class HtmlXPath extends XPath<Node> {
   HtmlXPath(XPathNode<Node> root) : super(root);
 
+  /// Create query by html string
   static HtmlXPath html(String html) {
     final dom = parse(html).documentElement;
     if (dom == null) throw UnsupportedError('No html');
     return HtmlXPath(HtmlNodeTree(dom));
   }
 
+  /// Create query by html node
   static HtmlXPath node(Node node) => HtmlXPath(HtmlNodeTree(node));
 }
